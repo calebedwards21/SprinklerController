@@ -54,3 +54,20 @@ Set up your I2C connection with the machine library
 i2c = machine.I2C(0)
 i2c = machine.I2C(1, sda, scl, freq)
 ```
+
+## Equation
+[Penman-Monteith](http://www.fao.org/3/X0490E/x0490e06.htm) - This equation will tell you how much water has evaporated from your yard during the day.
+
+Sensors Needed:
+
+- Temperature
+- Radiation - These sensors are expensive / Need to find some weather API that has a radiation sensor
+- Wind Speed
+- Humidity
+
+[Machine Learning](https://www.analyticsvidhya.com/blog/2017/09/common-machine-learning-algorithms/) - Supervised learning
+
+We will need weather data, like from the sensors we have, that has correct output of how much water we need. This is how the model will learn, and we can use our sensor's data to learn from this model
+
+- Linear Regression 
+- Need to find some historical data that has this info 
