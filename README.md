@@ -61,7 +61,7 @@ i2c = machine.I2C(1, sda, scl, freq)
 Sensors Needed:
 
 - Temperature
-- Radiation - These sensors are expensive / Need to find some weather API that has a radiation sensor
+- Radiation - These sensors are expensive / Need to find some weather API that has a radiation sensor, or create our own
 - Wind Speed
 - Humidity
 
