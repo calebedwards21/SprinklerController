@@ -2,6 +2,7 @@
 NOTE: Must clone repo in PI users home directory (pi@raspberrypi:~$) EXAMPLE: /home/pi/SprinklerController
 
 Setting up SIP to automatically execute on reboot 
+
  1.) Copy Script file sip.service to /etc/systemd/system. Run command:
      sudo cp SprinklerController/SIP/sip.service /etc/systemd/system/
      
