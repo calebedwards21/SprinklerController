@@ -11,8 +11,9 @@ Setting up SIP to automatically execute on reboot
  3.) Reboot PI. Run command:
      sudo reboot
 
-Check status,start,stop and restart sip.py
- Disable auto-start: sudo systemctl disable sip.service
+Check status,start,stop and restart SIP Interface with terminal commands:
+
+- Disable auto-start: sudo systemctl disable sip.service
  
 - Status: systemctl status sip
  
