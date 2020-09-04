@@ -24,4 +24,4 @@ Check status,start,stop and restart SIP Interface with terminal commands:
  
 - Restart: sudo systemctl restart sip
 
-See offical SIP Irrigational Control open source git hub project: https://github.com/Dan-in-CA/SIP/wiki/installation
+See offical SIP Irrigational Control open source git hub project: https://dan-in-ca.github.io/SIP/
