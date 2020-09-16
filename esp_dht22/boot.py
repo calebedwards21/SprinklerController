@@ -12,12 +12,10 @@ gc.collect()
 
 ssid = 'EDWARDS2'
 password = 'BENTCARD'
-mqtt_server = '192.168.1.135'
-#EXAMPLE IP ADDRESS
-#mqtt_server = '192.168.1.144'
+mqtt_server = '192.168.1.109'
 client_id = ubinascii.hexlify(machine.unique_id())
-topic_pub = b'temp_humidity'
-topic_sub = b'hello'
+topic_pub = b'weather_station'
+# topic_sub = b'hello'
 
 station = network.WLAN(network.STA_IF)
 

@@ -1,12 +1,12 @@
-def sub_cb(topic, msg):
-  print((topic, msg))
-  if topic == b'hello':
-    print('ESP received hello message')
+# def sub_cb(topic, msg):
+#   print((topic, msg))
+#   if topic == b'hello':
+#     print('ESP received hello message')
 
 def connect_and_subscribe():
   global client_id, mqtt_server, topic_sub
   client = MQTTClient(client_id, mqtt_server)
-  client.set_callback(sub_cb)
+  # client.set_callback(sub_cb)
   client.connect()
   client.subscribe(topic_sub)
   print('Connected to %s MQTT broker, subscribed to %s topic' % (mqtt_server, topic_sub))
