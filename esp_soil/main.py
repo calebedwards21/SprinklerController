@@ -15,7 +15,7 @@ gc.collect()
 
 ssid = 'EDWARDS2'
 password = 'BENTCARD'
-mqtt_server = '192.168.1.109' # PI IP address
+mqtt_server = '192.168.1.135' # PI IP address
 client_id = ubinascii.hexlify(machine.unique_id())
 topic_pub = b'zone_1'
 station = network.WLAN(network.STA_IF)
@@ -42,12 +42,11 @@ print("Sensor Ready")
 
 
 def connect_and_subscribe():
-    global client_id, mqtt_server, topic_sub
+    global client_id, mqtt_server
     client = MQTTClient(client_id, mqtt_server)
     # client.set_callback(sub_cb)
     client.connect()
-    client.subscribe(topic_sub)
-    print('Connected to %s MQTT broker, subscribed to %s topic' % (mqtt_server, topic_sub))
+    print('Connected to %s MQTT broker' % (mqtt_server))
     return client
 
 def restart_and_reconnect():
@@ -66,12 +65,12 @@ while True:
       temp = sensor.temperature
       moisture = sensor.moisture
       light = sensor.light
-      if isinstance(temp, float) and isinstance(moisture, float) and isinstance(light, float):  # Confirm sensor results are numeric
-          msg = (b'{0:3.1f},{1:3.1f},{1:3.1f}'.format(moisture, temp, light))
-          client.publish(topic_pub, msg)  # Publish sensor data to MQTT topic
-          print(msg)
-      else:
-          print('Invalid sensor readings.')
+      #if isinstance(temp, float) and isinstance(moisture, float) and isinstance(light, float):  # Confirm sensor results are numeric
+      msg = (b'{0:3.1f},{1:3.1f},{1:5f}'.format(moisture, temp, light))
+      client.publish(topic_pub, msg)  # Publish sensor data to MQTT topic
+      print(msg)
+      #else:
+          #print('Invalid sensor readings.')
   except OSError:
       print('Failed to read sensor.')
       restart_and_reconnect()
