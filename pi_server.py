@@ -9,18 +9,20 @@ db_client.create_database('sensor_data')
 
 
 def write_hub(temp, humidity):
-	data_end_time = int(time.time() * 1000) #ms - need to change to more readable time
+        t = time.localtime()
+        time_stamp = time.strftime("%A, %B %d,%Y %H:%M:%S",t)
+        print(time_stamp)
 	data = [
 	{
 		"measurement": "hub_temperature",
-		"time": data_end_time,
+		"time": time_stamp,
 		"fields": {
 			"temperature": temp
 		}
 	},
 	{
 		"measurement": "hub_humidity",
-		"time": data_end_time,
+		"time": time_stamp,
 		"fields": {
 			"humidity": humidity
 		}
@@ -30,11 +32,13 @@ def write_hub(temp, humidity):
 
 
 def write_zone(zone, moisture, temp, light):
-    	data_end_time = int(time.time() * 1000) #ms - need to change to more readable time
+        t = time.localtime()
+        time_stamp = time.strftime("%A, %B %d,%Y %H:%M:%S",t)
+        print(time_stamp)
 	data = [
 	{
 		"measurement": zone,
-		"time": data_end_time,
+		"time": time_stamp,
 		"fields": {
 			"moisture": moisture,
 			"temperature": temp,
@@ -66,9 +70,10 @@ def on_message(client, userdata, msg):
 		print("Received Zone topic")
 		print(msg.topic)
     		m,t,l = [float(x) for x in msg.payload.decode('utf-8').split(',')]
-		print(type(t))
 		temp = t * 9/5 + 32
-		print(temp)
+		print('Temperature: ',temp)
+		print('Moisture: ',m)
+		print('Light: ',l)
 		write_zone(msg.topic,m,temp,l)
 	else:
 		print(msg.topic)

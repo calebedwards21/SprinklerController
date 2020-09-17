@@ -3,7 +3,7 @@ from time import sleep
 
 
 class Chirp:
-    def __init__(self, bus, address=0x20, min_moist=250, max_moist=800):
+    def __init__(self, bus, address=0x20, min_moist=200, max_moist=800):
         self.i2c = bus
         self.address = address
         self.min_moist = min_moist
@@ -67,7 +67,7 @@ class Chirp:
 
     def light(self):
         self.i2c.writeto_mem(self.address, 0x03, bytearray(self._int_to_bytes(0,1)))
-        sleep(1.5)
+        sleep(5)
         return self.get_reg(4,2)
 
     @property
