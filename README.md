@@ -1,5 +1,4 @@
 # SprinklerController
-<<<<<<< HEAD
 
 ## MQTT
 This is the protocol used for wireless connection. This uses the Wifi for publish/subscribes.
@@ -72,7 +71,8 @@ We will need weather data, like from the sensors we have, that has correct outpu
 
 - Linear Regression 
 - Need to find some historical data that has this info 
-=======
+
+## Interface
 NOTE: Must clone repo in PI users home directory (pi@raspberrypi:~$) EXAMPLE: /home/pi/SprinklerController
 
 Setting up SIP to automatically execute on reboot 
@@ -99,4 +99,3 @@ Check status,start,stop and restart SIP Interface with terminal commands:
 - Restart: sudo systemctl restart sip
 
 See offical SIP Irrigational Control open source git hub project: https://dan-in-ca.github.io/SIP/
->>>>>>> Interface
