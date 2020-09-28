@@ -7,6 +7,8 @@ NOTE: Must install mosquitto broker on raspberry pi...run command --> sudo apt i
 
 NOTE: Must setup InfluxDB on raspberry pi...use following tutorial: https://pimylifeup.com/raspberry-pi-influxdb/
 
+**Make sure to install influxdb for both apt and pip.
+
 ## Flashing Micropython to ESP
 Start with the [DOCS](https://docs.micropython.org/en/latest/esp32/tutorial/intro.html)
 
