@@ -7,7 +7,7 @@ Dependencies
 
 - Must install mosquitto broker on raspberry pi...run command --> sudo apt install mosquitto mosquitto-clients
 
-- Must install paho-mqtt on raspberry pi..run command --> pip install paho-mqtt
+- Must install paho-mqtt on raspberry pi..run command --> sudo pip install paho-mqtt
 
 - Must setup InfluxDB on raspberry pi...use following tutorial: https://pimylifeup.com/raspberry-pi-influxdb/
 
