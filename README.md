@@ -3,11 +3,13 @@
 ## MQTT
 This is the protocol used for wireless connection. This uses the Wifi for publish/subscribes.
 
-NOTE: Must install mosquitto broker on raspberry pi...run command --> sudo apt install mosquitto mosquitto-clients
+Dependencies
 
-NOTE: Must install paho-mqtt on raspberry pi..run command --> pip install paho-mqtt
+- Must install mosquitto broker on raspberry pi...run command --> sudo apt install mosquitto mosquitto-clients
 
-NOTE: Must setup InfluxDB on raspberry pi...use following tutorial: https://pimylifeup.com/raspberry-pi-influxdb/
+- Must install paho-mqtt on raspberry pi..run command --> pip install paho-mqtt
+
+- Must setup InfluxDB on raspberry pi...use following tutorial: https://pimylifeup.com/raspberry-pi-influxdb/
 
 **Make sure to install influxdb for both apt and pip (sudo apt install influxdb; sudo pip install influxdb)
 
