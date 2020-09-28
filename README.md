@@ -2,6 +2,8 @@
 
 ## MQTT
 This is the protocol used for wireless connection. This uses the Wifi for publish/subscribes.
+NOTE: Must install mosquitto broker on raspberry pi...run command --> sudo apt install mosquitto mosquitto-clients
+NOTE: Must setup InfluxDB...use following tutorial: https://pimylifeup.com/raspberry-pi-influxdb/
 
 ## Flashing Micropython to ESP
 Start with the [DOCS](https://docs.micropython.org/en/latest/esp32/tutorial/intro.html)
