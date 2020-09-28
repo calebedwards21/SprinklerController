@@ -5,7 +5,7 @@ This is the protocol used for wireless connection. This uses the Wifi for publis
 
 NOTE: Must install mosquitto broker on raspberry pi...run command --> sudo apt install mosquitto mosquitto-clients
 
-NOTE: Must setup InfluxDB on raspberri pi...use following tutorial: https://pimylifeup.com/raspberry-pi-influxdb/
+NOTE: Must setup InfluxDB on raspberry pi...use following tutorial: https://pimylifeup.com/raspberry-pi-influxdb/
 
 ## Flashing Micropython to ESP
 Start with the [DOCS](https://docs.micropython.org/en/latest/esp32/tutorial/intro.html)
