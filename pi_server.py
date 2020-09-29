@@ -8,8 +8,8 @@ db_client = InfluxDBClient(host='localhost', port=8086)
 db_client.create_database('sensor_data')
 
 
-def write_hub(temp, humidity):
-        t = time.localtime()
+def write_hub(temp, humidity):        
+	t = time.localtime()
         time_stamp = time.strftime("%A, %B %d,%Y %H:%M:%S",t)
         print(time_stamp)
 	data = [

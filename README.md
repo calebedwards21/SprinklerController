@@ -10,6 +10,38 @@ Start with the [DOCS](https://docs.micropython.org/en/latest/esp32/tutorial/intr
 
 - The initial file that will be run on the esp using micropython will be boot.py followed with main.py
 
+## Running our PI_SERVER on startup
+- use the rc.local file in `/etc/rc.local`
+- Example : 
+> cd directory/containing/script
+> python script.py
+
+## Creating a Virtual Environment for Python
+- We need Python3 to run any of our ML files
+- `Python3 -m venv env-name`
+> Activate with the command `source env-name/bin/activate`
+
+## Installations
+### Sklearn
+- pip install -U scikit-learn
+> If any installation errors occur, possible fix `sudo apt-get install libatlas-base-dev`
+
+### Influx
+-Install locally
+[InfluxDB Download Page](https://portal.influxdata.com/downloads/)
+
+- Install on Python
+`pip install influxdb`
+
+### Mosquitto / MQTT
+- Install the broker
+`sudo apt install -y mosquitto mosquitto-clients`
+- Auto start on boot
+`sudo systemctl enable mosquitto.service`
+
+-Install on Python
+`pip install paho-mqtt`
+
 ## DHT22
 - PIN1 (VCC) - 5V
 - PIN2 (DATA) - IO33 - Or any IO Pin
