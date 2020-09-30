@@ -21,6 +21,11 @@ Start with the [DOCS](https://docs.micropython.org/en/latest/esp32/tutorial/intr
 - `Python3 -m venv env-name`
 > Activate with the command `source env-name/bin/activate`
 
+We will all want the same version of Python with the same packages
+After creating the virtual environment install the pip packages from requirements.txt
+`python3 -m pip install -r requirements.txt`
+>This way you will not need to install any of the pip packages required below
+
 ## Installations
 ### Sklearn
 - pip install -U scikit-learn
