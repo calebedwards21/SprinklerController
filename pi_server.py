@@ -3,6 +3,7 @@ import time
 import threading
 from influxdb import InfluxDBClient
 from sprinkler_ml import ML_Sprinkler 
+from weather_scraper import Scraper
 
 TOPICS = ['zone_1', 'zone_2', 'zone_3', 'weather_station']
 db_client = InfluxDBClient(host='localhost', port=8086)
