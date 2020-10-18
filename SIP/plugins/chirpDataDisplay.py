@@ -26,15 +26,7 @@ gv.plugin_menu.append([_(u"chirpDataDisplay Plugin"), u"/chirpDataDisplay-sp"])
 
 
 def empty_function():  # Only a place holder
-    print('trying empty function')
-    print(db_client.get_list_database())
-    db_client.switch_database('sensor_data')
-    results = db_client.query('Select * from unshaded ORDER BY time DESC limit 25')
-    print(results.raw)
-    points = results.get_points()
     
-    for p in points:
-        print("Time: %s, Moisture: %i, Temp: %i" % (p['time'],p['moisture'],p['temperature']))
     pass
 
 
@@ -44,13 +36,26 @@ class settings(ProtectedPage):
     """
 
     def GET(self):
+        print('trying empty function')
+        print(db_client.get_list_database())
+        db_client.switch_database('sensor_data')
+        results = db_client.query('Select * from unshaded ORDER BY time DESC limit 25')
+        print(results.raw)
+        points = list(results.get_points())
+        i=0
+
+        for p in points:
+            print("Time: %s, Moisture: %i, Temp: %i" % (p['time'],p['moisture'],p['temperature']))
+        #settings = points;  # Default settings. can be list, dictionary, etc.
+        settings = points
         try:
             with open(
-                u"./data/chirpDataDisplay.json", u"r"
-            ) as f:  # Read settings from json file if it exists
-                settings = json.load(f)
-        except IOError:  # If file does not exist return empty value
-            settings = {}  # Default settings. can be list, dictionary, etc.
+                u"./data/chirpDataDisplay.json",u"w"
+                ) as f:
+                    json.dump(settings,f)
+        except Exception as e:
+            print(u"file error: ",e)
+            settings = {"FAILED"}
         return template_render.chirpDataDisplay(settings)  # open settings page
 
 
