@@ -8,23 +8,21 @@ db_client = InfluxDBClient(host='localhost', port=8086)
 db_client.create_database('sensor_data')
 
 
-def write_hub(temp, humidity):
+def write_hub(temp,pressure,humidity):
         t = time.localtime()
-        time_stamp = time.strftime("%A, %B %d,%Y %H:%M:%S",t)
+        time_stamp = time.strftime("%H:%M:%S",t)
+        date_stamp = time.strftime("%B %d,%Y",t)
         print(time_stamp)
+        print(date_stamp)
 	data = [
 	{
-		"measurement": "hub_temperature",
+		"measurement": "weather_station",
 		"time": time_stamp,
+                "date": date_stamp,
 		"fields": {
-			"temperature": temp
-		}
-	},
-	{
-		"measurement": "hub_humidity",
-		"time": time_stamp,
-		"fields": {
-			"humidity": humidity
+			"temperature": temp,
+                        "pressure": pressure,
+                        "humidity": humidity
 		}
 	}
 	]
@@ -33,16 +31,18 @@ def write_hub(temp, humidity):
 
 def write_zone(zone, moisture, temp, light):
         t = time.localtime()
-        time_stamp = time.strftime("%A, %B %d,%Y %H:%M:%S",t)
+        time_stamp = time.strftime("%H:%M:%S",t)
+        date_stamp = time.strftime("%B %d,%Y",t)
         print(time_stamp)
+        print(date_stamp)
 	data = [
 	{
 		"measurement": zone,
 		"time": time_stamp,
+                "date": date_stamp,
 		"fields": {
 			"moisture": moisture,
-			"temperature": temp,
-			"light": light
+			"temperature": temp
 		}
 	}
 	]
@@ -62,10 +62,10 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
 	if msg.topic == 'weather_station':
 		print("Received weather_station topic")
-		t,h = [float(x) for x in msg.payload.decode('utf-8').split(',')]
+		t,p,h = [float(x) for x in msg.payload.decode('utf-8').split(',')]
 		t = t * 9/5 + 32
-		print('{0}F {1}%'.format(t,h))
-		write_hub(t,h)
+		print('{0}F {1}hPa {2}%'.format(t,p,h))
+		write_hub(t,p,h)
 	elif msg.topic == 'zone_1' or msg.topic == 'zone_2' or msg.topic == 'zone_3':
 		print("Received Zone topic")
 		print(msg.topic)
@@ -73,7 +73,6 @@ def on_message(client, userdata, msg):
 		temp = t * 9/5 + 32
 		print('Temperature: ',temp)
 		print('Moisture: ',m)
-		print('Light: ',l)
 		write_zone(msg.topic,m,temp,l)
 	else:
 		print(msg.topic)
@@ -100,3 +99,4 @@ def esp_data():
 # t = threading.Thread(target=esp_data)
 # t.start()
 esp_data()
+

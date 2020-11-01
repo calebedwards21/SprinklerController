@@ -13,15 +13,25 @@ import gc
 gc.collect()
 
 
+
+#Personal WIFI
 ssid = 'WmsonFamily'
 password = 'Montana123'
 mqtt_server = '10.0.0.179' # PI IP address
+
+#LAN Router
+#ssid = 'SprinklerProject'
+#password = 'RainRainGoAway'
+#mqtt_server = '192.168.1.3' # PI IP address
+
 client_id = ubinascii.hexlify(machine.unique_id())
-topic_pub = b'zone_1'
+topic_pub = b'zone_2'
+#topic_pub = b'shaded'
+#topic_pub = b'unshaded'
 station = network.WLAN(network.STA_IF)
 
 station.active(True)
-station.connect(ssid, password)
+station.connect(ssid,password)
 
 while station.isconnected() == False:
   pass
@@ -84,6 +94,7 @@ except OSError as e:
 while True:
   try:
       client.check_msg()
+      print('just before sensor reads')
       temp = measure_temp()
       light = measure_light()
       moisture = measure_moisture()
