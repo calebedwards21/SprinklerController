@@ -26,6 +26,7 @@ Start with the [DOCS](https://docs.micropython.org/en/latest/esp32/tutorial/intr
 - GND - GND
 - SDA - GPIO 21/4
 - SCL - GPIO 22/5 
+
 Micropython library link: https://github.com/loboris/MicroPython_ESP32_psRAM_LoBo/blob/master/MicroPython_BUILD/components/micropython/esp32/modules_examples/bme280.py
 
 ## DHT22
