@@ -21,7 +21,7 @@ Start with the [DOCS](https://docs.micropython.org/en/latest/esp32/tutorial/intr
 - The initial file that will be run on the esp using micropython will be boot.py followed with main.py
 
 
-##BME280
+## BME280
 - VCC - 5/3.3v - 3.3v is suggested
 - GND - GND
 - SDA - GPIO 21/4
