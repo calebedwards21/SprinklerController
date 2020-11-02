@@ -17,7 +17,6 @@ db_client = InfluxDBClient(host='localhost',port=8086)
 urls.extend([
     u"/chirpDataDisplay-sp", u"plugins.chirpDataDisplay.settings",
     u"/chirpDataDisplay-save", u"plugins.chirpDataDisplay.save_settings"
-
     ])
 # fmt: on
 
@@ -36,16 +35,21 @@ class settings(ProtectedPage):
     """
 
     def GET(self):
-        print('trying empty function')
-        print(db_client.get_list_database())
+        qdict = (
+            web.input()
+        )
+        for key in qdict:
+            print(qdict[key])
+        
+        #print(db_client.get_list_database())
         db_client.switch_database('sensor_data')
         results = db_client.query('Select * from unshaded ORDER BY time DESC limit 25')
-        print(results.raw)
+        #print(results.raw)
         points = list(results.get_points())
         i=0
 
         for p in points:
-            print("Time: %s, Moisture: %i, Temp: %i" % (p['time'],p['moisture'],p['temperature']))
+            print("Time: %s,Moisture: %i, Temp: %i" % (p['time'],p['moisture'],p['temperature']))
         #settings = points;  # Default settings. can be list, dictionary, etc.
         settings = points
         try:
@@ -59,6 +63,21 @@ class settings(ProtectedPage):
         return template_render.chirpDataDisplay(settings)  # open settings page
 
 
+class updateTable(ProtectedPage):
+    
+    def POST(self):
+        qdict = web.input()["zoneList"]
+            
+        print("GOT INTO UPDATETABLE")
+        
+        db_client.switch_database('sensor_data')
+        results = db_client.query('Select * from zone_1 ORDER BY time DESC limit 25')
+        print(results.raw)
+        points = list(results.get_points())
+        settings = points
+        
+        return template_render.chirpDataDisplay(settings)
+
 class save_settings(ProtectedPage):
     """
     Save user input to json file.
@@ -71,9 +90,12 @@ class save_settings(ProtectedPage):
             web.input()
         )  # Dictionary of values returned as query string from settings page.
         #        print qdict  # for testing
-        with open(u"./data/chirpDataDisplay.json", u"w") as f:  # Edit: change name of json file
-            json.dump(qdict, f)  # save to file
-        raise web.seeother(u"/")  # Return user to home page.
+        
+        for key in qdict:
+            print(qdict[key])
+        settings = {}   
+   # save to file
+        return template.render.chirpDataDisplay(settings)  # Return user to home page.
 
 
 #  Run when plugin is loaded
