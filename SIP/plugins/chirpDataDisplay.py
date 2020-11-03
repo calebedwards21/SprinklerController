@@ -16,7 +16,8 @@ db_client = InfluxDBClient(host='localhost',port=8086)
 # fmt: off
 urls.extend([
     u"/chirpDataDisplay-sp", u"plugins.chirpDataDisplay.settings",
-    u"/chirpDataDisplay-save", u"plugins.chirpDataDisplay.save_settings"
+    u"/chirpDataDisplay-save", u"plugins.chirpDataDisplay.save_settings",
+    u"/updateTables",u"plugins.chirpDataDisplay.updateTables"
     ])
 # fmt: on
 
@@ -63,20 +64,20 @@ class settings(ProtectedPage):
         return template_render.chirpDataDisplay(settings)  # open settings page
 
 
-class updateTable(ProtectedPage):
+class updateTables(ProtectedPage):
     
     def POST(self):
-        qdict = web.input()["zoneList"]
-            
         print("GOT INTO UPDATETABLE")
-        
+        qdict = web.data()
+        print(qdict)
+            
+    
         db_client.switch_database('sensor_data')
         results = db_client.query('Select * from zone_1 ORDER BY time DESC limit 25')
-        print(results.raw)
         points = list(results.get_points())
         settings = points
         
-        return template_render.chirpDataDisplay(settings)
+        return settings
 
 class save_settings(ProtectedPage):
     """

@@ -33,7 +33,7 @@ $var page: proto_plugin  <!--Edit: page name, used internally-->
     
     
     <div class='option' title='select zone'><span class="label">$_(u'List of Zones'):</span>
-        <select id="zoneList" name="zoneList" >
+        <select id="zoneList" name="zoneList" onchange="update()">
             <option value="zone_1">zone_1</option>
             <option value="zone_2">zone_2</option>
             <option value="zone_3" >zone_3</option>
@@ -76,7 +76,31 @@ $var page: proto_plugin  <!--Edit: page name, used internally-->
     
     
     
-    
+<script>
+    function update(){
+        var zoneSelected = document.getElementById("zoneList").value;
+        jQuery.ajax(
+            {
+                url: '/updateTables',
+                type: "POST",
+                data: zoneSelected,
+                success: function(result){
+                    console.log("made it to sucess");
+                    console.log(result.length);
+                    console.log(result);
+                    jQuery("#chirpDataTable").empty();
+                    thHTML = '<thead><tr><th scope=u"col">#</th><th scope=u"col">Time</th><th scope=u"col">Moisture</th><th scope=u"col">Temperature</th></tr></thead>';
+                    jQuery("#chirpDataTable").append(thHTML);
+                    },
+                error: function(result){
+                     console.log("ERROR");
+                     console.log(result)
+                    }
+                
+            });
+        
+        }
+</script>
  
 
 
