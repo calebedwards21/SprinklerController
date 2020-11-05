@@ -1,6 +1,6 @@
 # This is your main script.
 import machine
-import bme280
+from bme680 import *
 import time
 from umqttsimple import MQTTClient
 import ubinascii
@@ -39,8 +39,12 @@ print('Connection successful')
 print(station.ifconfig())
 
 #Setup Sensor BME280
+#i2c = machine.I2C(scl=machine.Pin(22), sda=machine.Pin(21), freq=30000)
+#bme = bme280.BME280(i2c=i2c)
+
+#Setup Sensor BME680
 i2c = machine.I2C(scl=machine.Pin(22), sda=machine.Pin(21), freq=30000)
-bme = bme280.BME280(i2c=i2c)
+bme = BME680_I2C(i2c=i2c)
 
 print("Sensor Ready")
 
@@ -67,19 +71,29 @@ except OSError as e:
 
 while True:
   try:
-      client.check_msg()
+      #client.check_msg()
       print('just before sensor reads')
-      t,p,h = bme.values
-      t1 = float(t)
-      p1 = float(p)
-      h1 = float(h)
-      msg = (b'{0:3.2f},{1:3.2f},{2:3.2f}'.format(t1, p1, h1))
+
+      #BME280 Polling
+      #t,p,h = bme.values
+      #t1 = float(t)
+      #p1 = float(p)
+      #h1 = float(h)
+
+      #BME680 Polling
+      temp = round(bme.temperature,1)
+      pres = round(bme.pressure,1)
+      humid = round(bme.humidity,1)
+      gas = bme.gas/1000
+
+      print(gas)
+      msg = (b'{0:3.1f},{1:3.1f},{2:3.1f}'.format(temp, pres, humid))
       client.publish(topic_pub, msg)  # Publish sensor data to MQTT topic
       print(msg)
       
   except OSError:
       print('Failed to read sensor.')
       restart_and_reconnect()
-  time.sleep(30)
+  time.sleep(60)
 
 
