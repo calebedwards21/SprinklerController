@@ -43,7 +43,6 @@ class settings(ProtectedPage):
         for key in qdict:
             print(qdict[key])
         
-        #print(db_client.get_list_database())
         db_client.switch_database('sensor_data')
         results = db_client.query('Select * from zone_1 ORDER BY time DESC limit 25')
         #print(results.raw)
@@ -59,6 +58,7 @@ class settings(ProtectedPage):
             print("Time: %s,Moisture: %i, Temp: %i" % (p['time'],p['moisture'],p['temperature']))
         #settings = points;  # Default settings. can be list, dictionary, etc.
         settings = points
+        bme = bme_vals
         try:
             with open(
                 u"./data/chirpDataDisplay.json",u"w"
@@ -67,7 +67,7 @@ class settings(ProtectedPage):
         except Exception as e:
             print(u"file error: ",e)
             settings = {"FAILED"}
-        return template_render.chirpDataDisplay(settings)  # open settings page
+        return template_render.chirpDataDisplay(settings,bme)  # open settings page
 
 
 class updateTables():
