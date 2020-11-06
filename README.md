@@ -24,4 +24,14 @@ Check status,start,stop and restart SIP Interface with terminal commands:
  
 - Restart: sudo systemctl restart sip
 
+
+DEBUG:
+
+1.) Run sudo stop command above
+
+2.) Using terminal...go to SIP directory
+
+3.) Run 'sudo python sip.py' to see print statements
+
+
 See offical SIP Irrigational Control open source git hub project: https://dan-in-ca.github.io/SIP/
