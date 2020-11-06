@@ -1,0 +1,109 @@
+$def with(settings)
+
+$var title: $_(u'SIP - Relay Plugin Settings')
+$var page: relay_plugin
+<script>
+    // Initialize behaviors
+    jQuery(document).ready(function(){
+
+        jQuery("#cSubmit").click(function() {
+            jQuery("#pluginForm").submit();
+        });
+        jQuery("button#cCancel").click(function(){
+            window.location="/";
+        });
+
+        jQuery("button#docButton").click(function(){
+            window.open("static/docs/plugins/proto-docs.html", "_blank"); //Edit: replace "proto-docs.html"
+        });
+
+    });
+</script>
+
+<script>
+    function editTable(){
+	// Count of relays to use
+	var number = document.getElementById("relaycount").value;
+	// Go through all input fields and enable/disable based off of count
+	for (i=0; i<8; i++){
+	    // Grab input element i+1
+	    var input = document.getElementById("relay"+(i+1));
+	    if (i < number){
+		input.disabled = false;
+	    } else {
+		input.disabled = true;
+	    }
+	}
+    }
+</script>
+
+<div id="plugin">
+    <div class="title">$_(u'Relay Plugin Settings')
+    <button class="execute" id="docButton" type="button" >$_(u'Help')</button>
+    </div>
+
+    <p>$_(u'Select the amount of relays that will be used to control the spinkler valves.')</p>
+    <form id="pluginForm" action="/relayupdate" method="get">
+	<div class='option' title='The amount of relays connected to the PI'><span class="label">$_(u'Relay count'):</span>
+	    <select id="relaycount" name="relaycount" onchange="editTable()">
+	    	<option value="1" ${"selected" if settings[u"relaycount"]==1 else ""}>1</option>
+	    	<option value="2" ${"selected" if settings[u"relaycount"]==2 else ""}>2</option>
+		<option value="3" ${"selected" if settings[u"relaycount"]==3 else ""}>3</option>
+		<option value="4" ${"selected" if settings[u"relaycount"]==4 else ""}>4</option>
+		<option value="5" ${"selected" if settings[u"relaycount"]==5 else ""}>5</option>
+		<option value="6" ${"selected" if settings[u"relaycount"]==6 else ""}>6</option>
+		<option value="7" ${"selected" if settings[u"relaycount"]==7 else ""}>7</option>
+		<option value="8" ${"selected" if settings[u"relaycount"]==8 else ""}>8</option>
+            </select>
+	</div>
+
+        <table class="optionList">
+            <thead>
+		<tr>
+                    <th class="stationNumber">$_(u'Relay')</th>
+                    <th class="stationNumber">$_(u'Pi GPIO Pin')</th>
+		</tr>
+            </thead>
+	    <tbody id="tbody">
+                <tr>
+		    <td style='text-transform: none;'>$_(u'Relay 1'):</td>
+                    <td><input type="text" name="relay1" id="relay1" value="${settings['relay1'] if 'relay1' in settings else '' }" ${"" if 'relay1' in settings else "disabled"}></td>
+                </tr>
+		<tr>
+		    <td style='text-transform: none;'>$_(u'Relay 2'):</td>
+                    <td><input type="text" name="relay2" id="relay2" value="${settings['relay2'] if 'relay2' in settings else '' }" ${"" if 'relay2' in settings else "disabled"}></td>
+                </tr>
+		<tr>
+		    <td style='text-transform: none;'>$_(u'Relay 3'):</td>
+                    <td><input type="text" name="relay3" id="relay3" value="${settings['relay3'] if 'relay3' in settings else '' }" ${"" if 'relay3' in settings else "disabled"}></td>
+                </tr>
+		<tr>
+		    <td style='text-transform: none;'>$_(u'Relay 4'):</td>
+                    <td><input type="text" name="relay4" id="relay4" value="${settings['relay4'] if 'relay4' in settings else '' }" ${"" if 'relay4' in settings else "disabled"}></td>
+                </tr>
+		<tr>
+		    <td style='text-transform: none;'>$_(u'Relay 5'):</td>
+                    <td><input type="text" name="relay5" id="relay5" value="${settings['relay5'] if 'relay5' in settings else '' }" ${"" if 'relay5' in settings else "disabled"}></td>
+                </tr>
+		<tr>
+		    <td style='text-transform: none;'>$_(u'Relay 6'):</td>
+                    <td><input type="text" name="relay6" id="relay6" value="${settings['relay6'] if 'relay6' in settings else '' }" ${"" if 'relay6' in settings else "disabled"}></td>
+                </tr>
+		<tr>
+		    <td style='text-transform: none;'>$_(u'Relay 7'):</td>
+                    <td><input type="text" name="relay7" id="relay7" value="${settings['relay7'] if 'relay7' in settings else '' }" ${"" if 'relay7' in settings else "disabled"}></td>
+                </tr>
+		<tr>
+		    <td style='text-transform: none;'>$_(u'Relay 8'):</td>
+                    <td><input type="text" name="relay8" id="relay8" value="${settings['relay8'] if 'relay8' in settings else '' }" ${"" if 'relay8' in settings else "disabled"}></td>
+                </tr>
+	    </tbody>
+        </table>
+
+    </form>
+
+    <div class="controls" id="controls">
+        <button id="cSubmit" class="submit"><b>$_(u'Submit')</b></button>
+        <button id="cCancel" class="cancel danger">$_(u'Cancel')</button>
+    </div>
+</div>

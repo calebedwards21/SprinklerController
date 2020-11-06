@@ -59,15 +59,19 @@ class settings(ProtectedPage):
         #settings = points;  # Default settings. can be list, dictionary, etc.
         settings = points
         bme = bme_vals
+        weather = {}
+        
+            
         try:
             with open(
-                u"./data/chirpDataDisplay.json",u"w"
+                u"./data/weather.json",u"r"
                 ) as f:
-                    json.dump(settings,f)
+                    weather = json.load(f)
         except Exception as e:
-            print(u"file error: ",e)
-            settings = {"FAILED"}
-        return template_render.chirpDataDisplay(settings,bme)  # open settings page
+            print(u"weather.json file error: ",e)
+        
+            weather = {"FAILED"}
+        return template_render.chirpDataDisplay(settings,bme,weather)  # open settings page
 
 
 class updateTables():
