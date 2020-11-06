@@ -49,6 +49,11 @@ class settings(ProtectedPage):
         #print(results.raw)
         points = list(results.get_points())
         i=0
+        
+        bme_res = db_client.query('select * from weather_station ORDER BY time DESC limit 1')
+        bme_vals = list(bme_res.get_points())
+        for v in bme_vals:
+            print("Time: %s, Temp: %i, Pressure: %i, Humidity: %i" % (v['time'],v['temperature'],v['pressure'],v['humidity']))
 
         for p in points:
             print("Time: %s,Moisture: %i, Temp: %i" % (p['time'],p['moisture'],p['temperature']))
