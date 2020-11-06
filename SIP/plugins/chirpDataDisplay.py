@@ -8,6 +8,7 @@ from sip import template_render  #  Needed for working with web.py templates
 from webpages import ProtectedPage  # Needed for security
 import json  # for working with data file
 from influxdb import InfluxDBClient
+import json
 
 db_client = InfluxDBClient(host='localhost',port=8086)
 
@@ -44,7 +45,7 @@ class settings(ProtectedPage):
         
         #print(db_client.get_list_database())
         db_client.switch_database('sensor_data')
-        results = db_client.query('Select * from unshaded ORDER BY time DESC limit 25')
+        results = db_client.query('Select * from zone_1 ORDER BY time DESC limit 25')
         #print(results.raw)
         points = list(results.get_points())
         i=0
@@ -64,20 +65,21 @@ class settings(ProtectedPage):
         return template_render.chirpDataDisplay(settings)  # open settings page
 
 
-class updateTables(ProtectedPage):
+class updateTables():
     
     def POST(self):
         print("GOT INTO UPDATETABLE")
-        qdict = web.data()
-        print(qdict)
+        zoneSelected = web.data()
+        print(zoneSelected)
             
     
         db_client.switch_database('sensor_data')
-        results = db_client.query('Select * from zone_1 ORDER BY time DESC limit 25')
+        results = db_client.query('Select * from ' + zoneSelected + ' ORDER BY time DESC limit 25')
         points = list(results.get_points())
         settings = points
+        ret = json.dumps(settings)
         
-        return settings
+        return ret
 
 class save_settings(ProtectedPage):
     """
