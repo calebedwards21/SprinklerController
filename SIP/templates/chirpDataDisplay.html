@@ -7,6 +7,52 @@ $var page: proto_plugin  <!--Edit: page name, used internally-->
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.22/datatables.min.css"/>
 <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.22/datatables.min.js"></script>
 
+$code:
+    area,city,state = weather['Today']['region'].split(',');
+    dayhour = weather['Today']['dayhour'];
+    if "Monday" in dayhour:
+          today = "Mon";
+          day1 = "Tue";
+          day2 = "Wed";
+          day3 = "Thu";
+          day4 = "Fri";
+    elif "Tuesday" in dayhour:
+         today = "Tue";
+         day1 = "Wed";
+         day2 = "Thu";
+         day3 = "Fri";
+         day4 = "Sat";
+    elif "Wednesday" in dayhour:
+         today = "Wed";
+         day1 = "Thu";
+         day2 = "Fri";
+         day3 = "Sat";
+         day4 = "Sun";
+    elif "Thursday" in dayhour:
+         today = "Thu";
+         day1 = "Fri";
+         day2 = "Sat";
+         day3 = "Sun";
+         day4 = "Mon";
+    elif "Friday" in dayhour:
+         today = "Fri";
+         day1 = "Sat";
+         day2 = "Sun";
+         day3 = "Mon";
+         day4 = "Tue";
+    elif "Saturday" in dayhour:
+         today = "Sat";
+         day1 = "Sun";
+         day2 = "Mon";
+         day3 = "Tue";
+         day4 = "Wed";
+    else:
+         today = "Sun";
+         day1 = "Mon";
+         day2 = "Tue";
+         day3 = "Wed";
+         day4 = "Thu";
+
 <style>
  .bmeContainer{
      display: grid;
@@ -57,6 +103,7 @@ $var page: proto_plugin  <!--Edit: page name, used internally-->
       border-color: black;
       }
   
+  <! --Weather Card template src: https://codepen.io/thomvallez/pen/NqyqWV --> 
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,300);
 html,
 body {
@@ -65,10 +112,10 @@ body {
 }
 
 .card {
-    margin: 0 auto;
+    
     margin-top: 5%;
     padding: 5px 30px;
-    width: 290px;
+    width: 300px;
     height: 470px;
     border-radius: 3px;
     background-color: #fff;
@@ -86,14 +133,14 @@ body {
     }
 }
 
-h1,
-h2,
-h3,
-h4 {
+.h1Weather,
+.h2Weather,
+.h3Weather,
+.h4Weather {
     position: relative;
 }
 
-h1 {
+.h1Weather {
     float: right;
     color: #666;
     font-weight: 300;
@@ -102,13 +149,13 @@ h1 {
     -webkit-animation: up 2s cubic-bezier(.39, 0, .38, 1) .2s;
 }
 
-h2 {
+.h2Weather {
     font-weight: 300;
     font-size: 2.25em;
     -webkit-animation: up 2s cubic-bezier(.39, 0, .38, 1);
 }
 
-h3 {
+.h3Weather {
     float: left;
     margin-right: 33px;
     color: #777;
@@ -160,7 +207,7 @@ span span {
 
 .cloud:before,
 .cloud:after {
-    position: absolute;
+    position: relative;
     display: block;
     content: "";
 }
@@ -181,48 +228,49 @@ span span {
     border-radius: 50%;
     background: #fff;
     box-shadow: 50px -6px 0 6px #fff, 25px -19px 0 10px #fff;
+    z-index: 10;
 }
 
-table {
+.tableWeather {
     position: relative;
     top: 10px;
     width: 100%;
     text-align: center;
 }
 
-tr:nth-child(1) td:nth-child(1),
-tr:nth-child(1) td:nth-child(2),
-tr:nth-child(1) td:nth-child(3),
-tr:nth-child(1) td:nth-child(4),
-tr:nth-child(1) td:nth-child(5) {
+.trW:nth-child(1) .tdW:nth-child(1),
+.trW:nth-child(1) .tdW:nth-child(2),
+.trW:nth-child(1) .tdW:nth-child(3),
+.trW:nth-child(1) .tdW:nth-child(4),
+.trW:nth-child(1) .tdW:nth-child(5) {
     padding-bottom: 32px;
     -webkit-animation: up 2s cubic-bezier(.39, 0, .38, 1) .7s;
 }
 
-tr:nth-child(2) td:nth-child(1),
-tr:nth-child(2) td:nth-child(2),
-tr:nth-child(2) td:nth-child(3),
-tr:nth-child(2) td:nth-child(4),
-tr:nth-child(2) td:nth-child(5) {
+.trW:nth-child(2) .tdW:nth-child(1),
+.trW:nth-child(2) .tdW:nth-child(2),
+.trW:nth-child(2) .tdW:nth-child(3),
+.trW:nth-child(2) .tdW:nth-child(4),
+.trW:nth-child(2) .tdW:nth-child(5) {
     padding-bottom: 7px;
     -webkit-animation: up 2s cubic-bezier(.39, 0, .38, 1) .9s;
 }
 
-tr:nth-child(3) td:nth-child(1),
-tr:nth-child(3) td:nth-child(2),
-tr:nth-child(3) td:nth-child(3),
-tr:nth-child(3) td:nth-child(4),
-tr:nth-child(3) td:nth-child(5) {
+.trW:nth-child(3) .tdW:nth-child(1),
+.trW:nth-child(3) .tdW:nth-child(2),
+.trW:nth-child(3) .tdW:nth-child(3),
+.trW:nth-child(3) .tdW:nth-child(4),
+.trW:nth-child(3) .tdW:nth-child(5) {
     padding-bottom: 7px;
     -webkit-animation: up 2s cubic-bezier(.39, 0, .38, 1) .9s;
 }
 
-tr:nth-child(2),
-tr:nth-child(3) {
+.trW:nth-child(2),
+.trW:nth-child(3) {
     font-size: .9em;
 }
 
-tr:nth-child(3) {
+.trW:nth-child(3) {
     color: #999;
 }
 
@@ -268,13 +316,15 @@ tr:nth-child(3) {
     </div>
     
     <hr>
+    
     <h2>Weekly Weather</h2>
     
      <div class="card">
 
-        <h2>Brussels</h2>
-        <h3>Cloudy<span>Wind 10km/h <span class="dot">•</span> Precip 0%</span></h3>
-        <h1>23°</h1>
+        <h2 class="h2Weather">${city + ',' + state}</h2>
+        <h3 class="h3Weather">$weather['Today']['weather_now']<span>Wind $weather['Today']['wind'] <span class="dot">•</span> Precip $weather['Today']['precipitation']</span></h3>
+        <h3 class="h3Weather">Humidity $weather['Today']['humidity'] </h3>
+        <h1 class="h1Weather">$weather['Today']['temp_now']°</h1>
         <div class="sky">
             <div class="sun"></div>
             <div class="cloud">
@@ -283,27 +333,27 @@ tr:nth-child(3) {
                 <div class="circle-medium"></div>
             </div>
         </div>
-        <table>
-            <tr>
-                <td>TUE</td>
-                <td>WED</td>
-                <td>THU</td>
-                <td>FRI</td>
-                <td>SAT</td>
+        <table class="tableWeather">
+            <tr class="trW">
+                <td class="tdW">$today</td>
+                <td class="tdW">$day1</td>
+                <td class="tdW">$day2</td>
+                <td class="tdW">$day3</td>
+                <td class="tdW">$day4</td>
             </tr>
-            <tr>
-                <td>30°</td>
-                <td>34°</td>
-                <td>36°</td>
-                <td>34°</td>
-                <td>37°</td>
+            <tr class="trW">
+                <td class="tdW">$weather['Future'][today]['max_temp']°</td>
+                <td class="tdW">$weather['Future'][day1]['max_temp']°</td>
+                <td class="tdW">$weather['Future'][day2]['max_temp']°</td>
+                <td class="tdW">$weather['Future'][day3]['max_temp']°</td>
+                <td class="tdW">$weather['Future'][day4]['max_temp']°</td>
             </tr>
-            <tr>
-                <td>17°</td>
-                <td>22°</td>
-                <td>19°</td>
-                <td>23°</td>
-                <td>19°</td>
+            <tr class="trW">
+                <td class="tdW">$weather['Future'][today]['min_temp']°</td>
+                <td class="tdW">$weather['Future'][day1]['min_temp']°</td>
+                <td class="tdW">$weather['Future'][day2]['min_temp']°</td>
+                <td class="tdW">$weather['Future'][day3]['min_temp']°</td>
+                <td class="tdW">$weather['Future'][day4]['min_temp']°</td>
             </tr>
         </table>
     </div>
@@ -329,7 +379,7 @@ tr:nth-child(3) {
     
     <hr>
     
-    <h2>Select Zone Data</h2>
+    <h2>Soil Moisture per Zone Data</h2>
     <p>
     Select the zone to get the 25 most recent soil moisture readings
     </p>
