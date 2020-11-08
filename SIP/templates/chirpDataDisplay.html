@@ -8,6 +8,12 @@ $var page: proto_plugin  <!--Edit: page name, used internally-->
 <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.22/datatables.min.js"></script>
 
 $code:
+    cloudy = "http://ssl.gstatic.com/onebox/weather/48/partly_cloudy.png";
+    snow = "http://ssl.gstatic.com/onebox/weather/48/snow_light.png";
+    sunny = "http://ssl.gstatic.com/onebox/weather/48/sunny.png";
+    rain = "http://ssl.gstatic.com/onebox/weather/48/rain.png";
+    thunder_storms = "http://ssl.gstatic.com/onebox/weather/48/rain_s_cloudy.png";
+    
     area,city,state = weather['Today']['region'].split(',');
     dayhour = weather['Today']['dayhour'];
     if "Monday" in dayhour:
@@ -52,7 +58,19 @@ $code:
          day2 = "Tue";
          day3 = "Wed";
          day4 = "Thu";
-
+    weatherToday = weather['Today']['weather_now'];
+    if "Snow" in weatherToday:
+        weatherImage = snow;
+    elif "thunderstorms" in weatherToday:
+        weatherImage = thunder_storms;
+    elif "cloudy" in weatherToday:
+        weatherImage = cloudy;
+    elif "rain" in weatherToday:
+        weatherImage = rain;
+    else:
+        weatherImage = sunny;
+        
+    
 <style>
  .bmeContainer{
      display: grid;
@@ -144,8 +162,8 @@ body {
     float: right;
     color: #666;
     font-weight: 300;
-    font-size: 6.59375em;
-    line-height: .2em;
+    font-size: 5.0em;
+    
     -webkit-animation: up 2s cubic-bezier(.39, 0, .38, 1) .2s;
 }
 
@@ -180,13 +198,24 @@ span span {
 
 .sky {
     position: relative;
-    margin-top: 108px;
-    width: 100px;
+    margin-top: 15px;
+    width: 95px;
     height: 100px;
     border-radius: 50%;
+    left: 1px;
     background-color: #03A9F4;
     -webkit-animation: up 2s cubic-bezier(.39, 0, .38, 1) .2s;
 }
+
+.weatherImage{
+    position: relative;
+    top: 5px;
+    width: 80px;
+    height: 80px;
+    left: 1px;
+    border-radius: 50%;
+    -webkit-animation: up 2s cubic-bezier(.39, 0, .38, 1) .5s;
+    }
 
 .sun {
     position: relative;
@@ -311,6 +340,7 @@ span span {
 
 <div id="plugin">
     <h1> Sensor Data Display</h1>
+    
     <div class="title">Click help for more information about this page   <!--Edit: User page heading, Make relevant to your plugin-->
     <button class="execute" id="docButton" type="button" >$_(u'Help')</button>
     </div>
@@ -326,12 +356,7 @@ span span {
         <h3 class="h3Weather">Humidity $weather['Today']['humidity'] </h3>
         <h1 class="h1Weather">$weather['Today']['temp_now']°</h1>
         <div class="sky">
-            <div class="sun"></div>
-            <div class="cloud">
-                <div class="circle-small"></div>
-                <div class="circle-tall"></div>
-                <div class="circle-medium"></div>
-            </div>
+            <img class="weatherImage" src=$weatherImage alt="weather_image">
         </div>
         <table class="tableWeather">
             <tr class="trW">
