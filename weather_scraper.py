@@ -76,7 +76,7 @@ class Scraper:
 
     def get_separate_future(self):
         """
-        Returns all days as separate objects
+        Returns all days as separate objects in a list
         """
         future_list = []
         future = {}
@@ -121,15 +121,3 @@ class Scraper:
         for item in future:
             with open('%s.json' % item['day'], 'w') as outfile:
                 json.dump(item, outfile)
-            print(item)
-
-s = Scraper()
-s.create_scraper()
-s.write_file()
-s.write_separate()
-            
-        print(data)
-        
-s = Scraper()
-s.create_scraper()
-s.write_file()
