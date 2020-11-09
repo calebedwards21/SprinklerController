@@ -62,7 +62,7 @@ class Scraper:
         future = {}
         result = {}
         days = self.soup.find("div", attrs={"id": "wob_dp"})
-        for day in days.findAll("div", attrs={"class": "wob_df"}):
+        for idx,day in enumerate(days.findAll("div", attrs={"class": "wob_df"})):
             day_name = day.find("div", attrs={"class": "QrNVmd Z1VzSb"}).text
             weather = day.find("img", attrs={"class": "uW5pk"})
             max = day.find("div", attrs={"class": "vk_gy gNCp2e"})
@@ -89,3 +89,8 @@ class Scraper:
         with open('weather.json', 'w') as outfile:
             json.dump(data, outfile)
             
+        print(data)
+        
+s = Scraper()
+s.create_scraper()
+s.write_file()
