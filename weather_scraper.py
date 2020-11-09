@@ -50,7 +50,7 @@ class Scraper:
         result['precipitation'] = self.soup.find("span", attrs={"id": "wob_pp"}).text
         result['humidity'] = self.soup.find("span", attrs={"id": "wob_hm"}).text
         result['wind'] = self.soup.find("span", attrs={"id": "wob_ws"}).text
-        ret['Today'] = result
+        ret['today'] = result
         return ret
 
 
@@ -69,9 +69,28 @@ class Scraper:
             max_temp = max.find("span", attrs={"style": "display:inline"}).text
             min = day.find("div", attrs={"class": "QrNVmd ZXCv8e"})
             min_temp = min.find("span", attrs={"style": "display:inline"}).text
-            future[day_name] = {"weather": weather['alt'], "weather_img": weather['src'], "max_temp": max_temp, "min_temp": min_temp}        
+            future[day_name.lower()] = {"weather": weather['alt'], "weather_img": weather['src'], "max_temp": max_temp, "min_temp": min_temp}        
         result['future_weather'] = future
         return result
+
+
+    def get_separate_future(self):
+        """
+        Returns all days as separate objects
+        """
+        future_list = []
+        future = {}
+        days = self.soup.find("div", attrs={"id": "wob_dp"})
+        for day in days.findAll("div", attrs={"class": "wob_df"}):
+            day_name = day.find("div", attrs={"class": "QrNVmd Z1VzSb"}).text
+            weather = day.find("img", attrs={"class": "uW5pk"})
+            max = day.find("div", attrs={"class": "vk_gy gNCp2e"})
+            max_temp = max.find("span", attrs={"style": "display:inline"}).text
+            min = day.find("div", attrs={"class": "QrNVmd ZXCv8e"})
+            min_temp = min.find("span", attrs={"style": "display:inline"}).text
+            future[day_name.lower()] = {"day": day_name.lower(), "weather": weather['alt'], "weather_img": weather['src'], "max_temp": max_temp, "min_temp": min_temp}        
+            future_list.append(future[day_name.lower()])
+        return future_list
 
 
     def write_file(self):
@@ -81,13 +100,33 @@ class Scraper:
         data = {}        
         
         today = self.get_weather_now()        
-        data['Today'] = today['Today']
+        data['today'] = today['today']
 
         future = self.get_weather_future()
-        data['Future'] = future['future_weather']        
+        data['future'] = future['future_weather']        
 
         with open('weather.json', 'w') as outfile:
             json.dump(data, outfile)
+
+
+    def write_separate(self):
+        """
+        Write all data in separate json
+        """
+        today = self.get_weather_now()
+        with open('today.json', 'w') as outfile:
+            json.dump(today, outfile)
+
+        future = self.get_separate_future()
+        for item in future:
+            with open('%s.json' % item['day'], 'w') as outfile:
+                json.dump(item, outfile)
+            print(item)
+
+s = Scraper()
+s.create_scraper()
+s.write_file()
+s.write_separate()
             
         print(data)
         
