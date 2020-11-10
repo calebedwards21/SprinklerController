@@ -1,5 +1,10 @@
 # SprinklerController
 
+## Git
+We needed to create a git repo that contained the repo from a third party.
+This would be a submodule, which we will use for pulling in SIP
+`git submodule add clone_link repo_name`
+
 ## MQTT
 This is the protocol used for wireless connection. This uses the Wifi for publish/subscribes.
 
