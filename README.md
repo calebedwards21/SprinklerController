@@ -5,6 +5,8 @@ We needed to create a git repo that contained the repo from a third party.
 This would be a submodule, which we will use for pulling in SIP
 `git submodule add clone_link repo_name`
 
+> Resource : [git-submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules)
+
 ## MQTT
 This is the protocol used for wireless connection. This uses the Wifi for publish/subscribes.
 
