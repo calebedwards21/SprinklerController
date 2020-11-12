@@ -105,7 +105,7 @@ class Scraper:
         future = self.get_weather_future()
         data['future'] = future['future_weather']        
 
-        with open('weather.json', 'w') as outfile:
+        with open('/home/pi/SprinklerController/SIP/data/weather.json', 'w') as outfile:
             json.dump(data, outfile)
 
 

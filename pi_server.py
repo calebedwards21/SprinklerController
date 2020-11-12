@@ -2,14 +2,14 @@ import paho.mqtt.client as mqtt
 import time
 import threading
 from influxdb import InfluxDBClient
-from sprinkler_ml import ML_Sprinkler 
+#from sprinkler_ml import ML_Sprinkler 
 from weather_scraper import Scraper
 
 db_client = InfluxDBClient(host='localhost', port=8086) #Database
 db_client.create_database('sensor_data')
 
-model = ML_Sprinkler() #Machine Learning Model
-model.create_model()
+#model = ML_Sprinkler() #Machine Learning Model
+#model.create_model()
 
 scraper = Scraper() #Weather Scraper
 scraper.create_scraper()
@@ -17,64 +17,53 @@ scraper.create_scraper()
 TOPICS = ['zone_1', 'zone_2', 'zone_3', 'weather_station'] #Topics to subscribe to
 
 
-def write_hub(temp, humidity):
-    """
-    Rcv data from the hub and store in the database
-    """
-    
-    #Create DB input from data received from hub topic
-    time = time.localtime()
-    time_stamp = time.strftime("%A, %B %d,%Y %H:%M:%S", time)
-    data = [
-    {
-        "measurement": "hub_temperature",
-        "time": time_stamp,
-        "fields": {
-            "temperature": temp
-        }
-    },
-    {
-        "measurement": "hub_humidity",
-        "time": time_stamp,
-        "fields": {
-            "humidity": humidity
-        }
-    }
-    ]
-    
-    #Write data to database
-    db_client.write_points(data, database='sensor_data')
-    print(f'End of writing hub')
+def write_hub(temp,pressure,humidity):
+        t = time.localtime()
+        time_stamp = time.strftime("%H:%M:%S",t)
+        date_stamp = time.strftime("%B %d,%Y",t)
+        print(time_stamp)
+        print(date_stamp)
+	data = [
+	{
+		"measurement": "weather_station",
+		"time": time_stamp,
+                "date": date_stamp,
+		"fields": {
+			"temperature": temp,
+                        "pressure": pressure,
+                        "humidity": humidity
+		}
+	}
+	]
+	db_client.write_points(data, database='sensor_data')
+
+        print('End of writing hub')
 
 
-def write_zone(zone, moisture, temp, light): #Need to edit this if were not using light
-    """
-    Rcv data from a zone esp and store in database
-    """
+def write_zone(zone, moisture, temp, light):
+        t = time.localtime()
+        time_stamp = time.strftime("%H:%M:%S",t)
+        date_stamp = time.strftime("%B %d,%Y",t)
+        print(time_stamp)
+        print(date_stamp)
+	data = [
+	{
+		"measurement": zone,
+		"time": time_stamp,
+                "date": date_stamp,
+		"fields": {
+			"moisture": moisture,
+			"temperature": temp
+		}
+	}
+	]
+	db_client.write_points(data, database='sensor_data')
+        print('End of writing ' + zone)
     
-    #Create DB input from data from one of the zone topics
-    t = time.localtime()
-    time_stamp = time.strftime("%A, %B %d,%Y %H:%M:%S",t)
-    print(time_stamp)
-    data = [
-    {
-        "measurement": zone,
-        "time": time_stamp,
-        "fields": {
-            "moisture": moisture,
-            "temperature": temp,
-            "light": light
-        }
-    }
-    ]
-    
-    #Write the data to the database
-    db_client.write_points(data, database='sensor_data')
-    print(f'End of writing zone : {zone}')
-    
-    # Output scraped data to json files
-    if zone == "zone_1":
-        scraper.write_file()
+        # Output scraped data to json files
+        if zone == "zone_2" or zone == "zone_1":
+            scraper.write_file()
+            print("wrote file")
 
 
 def on_message(client, userdata, msg):
@@ -83,15 +72,16 @@ def on_message(client, userdata, msg):
     """
     if msg.topic == 'weather_station':
         print("Received weather_station topic")
-        t,h = [float(x) for x in msg.payload.decode('utf-8').split(',')]
+        t,p,h = [float(x) for x in msg.payload.decode('utf-8').split(',')]
         t = t * 9/5 + 32
-        print(('{0}F {1}%'.format(t,h)))
-        write_hub(t,h)
+        print('{0}F {1}hPa {2}%'.format(t,p,h))
+	write_hub(t,p,h)
     elif msg.topic == 'zone_1' or msg.topic == 'zone_2' or msg.topic == 'zone_3':
-        print(f'Received Zone topic : {msg.topic}')
+        print('Received Zone topic :' + msg.topic)
         m,t,l = [float(x) for x in msg.payload.decode('utf-8').split(',')]
         temp = t * 9/5 + 32
-        print(f'Temp : {temp}, Moisture : {m}, Light : {l}')
+        print('Temperature: ',temp)
+	print('Moisture: ',m)
         write_zone(msg.topic,m,temp,l)
     else:
         print((msg.topic))
