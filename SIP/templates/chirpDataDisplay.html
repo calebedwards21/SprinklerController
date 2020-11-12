@@ -14,51 +14,52 @@ $code:
     rain = "http://ssl.gstatic.com/onebox/weather/48/rain.png";
     thunder_storms = "http://ssl.gstatic.com/onebox/weather/48/rain_s_cloudy.png";
     
-    area,city,state = weather['Today']['region'].split(',');
-    dayhour = weather['Today']['dayhour'];
+    city,state = weather['today']['region'].split(',');
+    dayhour = weather['today']['dayhour'];
+
     if "Monday" in dayhour:
-          today = "Mon";
-          day1 = "Tue";
-          day2 = "Wed";
-          day3 = "Thu";
-          day4 = "Fri";
+          today = "mon";
+          day1 = "tue";
+          day2 = "wed";
+          day3 = "thu";
+          day4 = "fri";
     elif "Tuesday" in dayhour:
-         today = "Tue";
-         day1 = "Wed";
-         day2 = "Thu";
-         day3 = "Fri";
-         day4 = "Sat";
+         today = "tue";
+         day1 = "wed";
+         day2 = "thu";
+         day3 = "fri";
+         day4 = "sat";
     elif "Wednesday" in dayhour:
-         today = "Wed";
-         day1 = "Thu";
-         day2 = "Fri";
-         day3 = "Sat";
-         day4 = "Sun";
+         today = "wed";
+         day1 = "thu";
+         day2 = "fri";
+         day3 = "sat";
+         day4 = "sun";
     elif "Thursday" in dayhour:
-         today = "Thu";
-         day1 = "Fri";
-         day2 = "Sat";
-         day3 = "Sun";
-         day4 = "Mon";
+         today = "thu";
+         day1 = "fri";
+         day2 = "sat";
+         day3 = "sun";
+         day4 = "mon";
     elif "Friday" in dayhour:
-         today = "Fri";
-         day1 = "Sat";
-         day2 = "Sun";
-         day3 = "Mon";
-         day4 = "Tue";
+         today = "fri";
+         day1 = "sat";
+         day2 = "sun";
+         day3 = "mon";
+         day4 = "tue";
     elif "Saturday" in dayhour:
-         today = "Sat";
-         day1 = "Sun";
-         day2 = "Mon";
-         day3 = "Tue";
+         today = "sat";
+         day1 = "sun";
+         day2 = "mon";
+         day3 = "tue";
          day4 = "Wed";
     else:
-         today = "Sun";
-         day1 = "Mon";
-         day2 = "Tue";
-         day3 = "Wed";
-         day4 = "Thu";
-    weatherToday = weather['Today']['weather_now'];
+         today = "sun";
+         day1 = "mon";
+         day2 = "tue";
+         day3 = "wed";
+         day4 = "thu";
+    weatherToday = weather['today']['weather_now'];
     if "Snow" in weatherToday:
         weatherImage = snow;
     elif "thunderstorms" in weatherToday:
@@ -352,33 +353,33 @@ span span {
      <div class="card">
 
         <h2 class="h2Weather">${city + ',' + state}</h2>
-        <h3 class="h3Weather">$weather['Today']['weather_now']<span>Wind $weather['Today']['wind'] <span class="dot">•</span> Precip $weather['Today']['precipitation']</span></h3>
-        <h3 class="h3Weather">Humidity $weather['Today']['humidity'] </h3>
-        <h1 class="h1Weather">$weather['Today']['temp_now']°</h1>
+        <h3 class="h3Weather">$weather['today']['weather_now']<span>Wind $weather['today']['wind'] <span class="dot">•</span> Precip $weather['today']['precipitation']</span></h3>
+        <h3 class="h3Weather">Humidity $weather['today']['humidity'] </h3>
+        <h1 class="h1Weather">$weather['today']['temp_now']°</h1>
         <div class="sky">
             <img class="weatherImage" src=$weatherImage alt="weather_image">
         </div>
         <table class="tableWeather">
             <tr class="trW">
-                <td class="tdW">$today</td>
-                <td class="tdW">$day1</td>
-                <td class="tdW">$day2</td>
-                <td class="tdW">$day3</td>
-                <td class="tdW">$day4</td>
+                <td class="tdW">$today.capitalize()</td>
+                <td class="tdW">$day1.capitalize()</td>
+                <td class="tdW">$day2.capitalize()</td>
+                <td class="tdW">$day3.capitalize()</td>
+                <td class="tdW">$day4.capitalize()</td>
             </tr>
             <tr class="trW">
-                <td class="tdW">$weather['Future'][today]['max_temp']°</td>
-                <td class="tdW">$weather['Future'][day1]['max_temp']°</td>
-                <td class="tdW">$weather['Future'][day2]['max_temp']°</td>
-                <td class="tdW">$weather['Future'][day3]['max_temp']°</td>
-                <td class="tdW">$weather['Future'][day4]['max_temp']°</td>
+                <td class="tdW">$weather['future'][today]['max_temp']°</td>
+                <td class="tdW">$weather['future'][day1]['max_temp']°</td>
+                <td class="tdW">$weather['future'][day2]['max_temp']°</td>
+                <td class="tdW">$weather['future'][day3]['max_temp']°</td>
+                <td class="tdW">$weather['future'][day4]['max_temp']°</td>
             </tr>
             <tr class="trW">
-                <td class="tdW">$weather['Future'][today]['min_temp']°</td>
-                <td class="tdW">$weather['Future'][day1]['min_temp']°</td>
-                <td class="tdW">$weather['Future'][day2]['min_temp']°</td>
-                <td class="tdW">$weather['Future'][day3]['min_temp']°</td>
-                <td class="tdW">$weather['Future'][day4]['min_temp']°</td>
+                <td class="tdW">$weather['future'][today]['min_temp']°</td>
+                <td class="tdW">$weather['future'][day1]['min_temp']°</td>
+                <td class="tdW">$weather['future'][day2]['min_temp']°</td>
+                <td class="tdW">$weather['future'][day3]['min_temp']°</td>
+                <td class="tdW">$weather['future'][day4]['min_temp']°</td>
             </tr>
         </table>
     </div>
