@@ -1,17 +1,14 @@
 # SprinklerController
 
+## Git
+We needed to create a git repo that contained the repo from a third party.
+This would be a submodule, which we will use for pulling in SIP
+`git submodule add clone_link repo_name`
+
+> Resource : [git-submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules)
+
 ## MQTT
 This is the protocol used for wireless connection. This uses the Wifi for publish/subscribes.
-
-Dependencies
-
-- Must install mosquitto broker on raspberry pi...run command --> sudo apt install mosquitto mosquitto-clients
-
-- Must install paho-mqtt on raspberry pi..run command --> sudo pip install paho-mqtt
-
-- Must setup InfluxDB on raspberry pi...use following tutorial: https://pimylifeup.com/raspberry-pi-influxdb/
-
-**Make sure to install influxdb for both apt and pip (sudo apt install influxdb; sudo pip install influxdb)
 
 ## Flashing Micropython to ESP
 Start with the [DOCS](https://docs.micropython.org/en/latest/esp32/tutorial/intro.html)
@@ -20,14 +17,42 @@ Start with the [DOCS](https://docs.micropython.org/en/latest/esp32/tutorial/intr
 
 - The initial file that will be run on the esp using micropython will be boot.py followed with main.py
 
+## Running our PI_SERVER on startup
+- use the rc.local file in `/etc/rc.local`
+- Example : 
+> cd directory/containing/script
+> python script.py
 
-## BME280
-- VCC - 5/3.3v - 3.3v is suggested
-- GND - GND
-- SDA - GPIO 21/4
-- SCL - GPIO 22/5 
+## Creating a Virtual Environment for Python
+- We need Python3 to run any of our ML files
+- `Python3 -m venv env-name`
+> Activate with the command `source env-name/bin/activate`
 
-Micropython library link: https://github.com/loboris/MicroPython_ESP32_psRAM_LoBo/blob/master/MicroPython_BUILD/components/micropython/esp32/modules_examples/bme280.py
+We will all want the same version of Python with the same packages
+After creating the virtual environment install the pip packages from requirements.txt
+`python3 -m pip install -r requirements.txt`
+>This way you will not need to install any of the pip packages required below
+
+## Installations
+### Sklearn
+- pip install -U scikit-learn
+> If any installation errors occur, possible fix `sudo apt-get install libatlas-base-dev`
+
+### Influx
+-Install locally
+[InfluxDB Download Page](https://portal.influxdata.com/downloads/)
+
+- Install on Python
+`pip install influxdb`
+
+### Mosquitto / MQTT
+- Install the broker
+`sudo apt install -y mosquitto mosquitto-clients`
+- Auto start on boot
+`sudo systemctl enable mosquitto.service`
+
+-Install on Python
+`pip install paho-mqtt`
 
 ## DHT22
 - PIN1 (VCC) - 5V
@@ -90,3 +115,31 @@ We will need weather data, like from the sensors we have, that has correct outpu
 
 - Linear Regression 
 - Need to find some historical data that has this info 
+
+## Interface
+NOTE: Must clone repo in PI users home directory (pi@raspberrypi:~$) EXAMPLE: /home/pi/SprinklerController
+
+Setting up SIP to automatically execute on reboot 
+
+ 1.) Copy Script file sip.service to /etc/systemd/system. Run command:
+     sudo cp SprinklerController/SIP/sip.service /etc/systemd/system/
+     
+ 2.) Enable sip.service. Run command:
+     sudo systemctl enable sip.service
+     
+ 3.) Reboot PI. Run command:
+     sudo reboot
+
+Check status,start,stop and restart SIP Interface with terminal commands:
+
+- Disable auto-start: sudo systemctl disable sip.service
+ 
+- Status: systemctl status sip
+ 
+- Start: sudo systemctl start sip
+ 
+- Stop: sudo systemctl stop sip
+ 
+- Restart: sudo systemctl restart sip
+
+See offical SIP Irrigational Control open source git hub project: https://dan-in-ca.github.io/SIP/

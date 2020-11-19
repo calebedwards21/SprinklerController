@@ -1,0 +1,530 @@
+$def with(settings,bme,weather)
+<!-- Edit: Replace "proto_vals" with settings values for your plugin if used-->
+
+$var title: $_(u'SIP chirpDataDisplay Plugin') <!--Edit: Title to show on browser tab-->
+$var page: proto_plugin  <!--Edit: page name, used internally-->
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.22/datatables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.22/datatables.min.js"></script>
+
+$code:
+    cloudy = "http://ssl.gstatic.com/onebox/weather/48/partly_cloudy.png";
+    snow = "http://ssl.gstatic.com/onebox/weather/48/snow_light.png";
+    sunny = "http://ssl.gstatic.com/onebox/weather/48/sunny.png";
+    rain = "http://ssl.gstatic.com/onebox/weather/48/rain.png";
+    thunder_storms = "http://ssl.gstatic.com/onebox/weather/48/rain_s_cloudy.png";
+    
+    city,state = weather['today']['region'].split(',');
+    dayhour = weather['today']['dayhour'];
+
+    if "Monday" in dayhour:
+          today = "mon";
+          day1 = "tue";
+          day2 = "wed";
+          day3 = "thu";
+          day4 = "fri";
+    elif "Tuesday" in dayhour:
+         today = "tue";
+         day1 = "wed";
+         day2 = "thu";
+         day3 = "fri";
+         day4 = "sat";
+    elif "Wednesday" in dayhour:
+         today = "wed";
+         day1 = "thu";
+         day2 = "fri";
+         day3 = "sat";
+         day4 = "sun";
+    elif "Thursday" in dayhour:
+         today = "thu";
+         day1 = "fri";
+         day2 = "sat";
+         day3 = "sun";
+         day4 = "mon";
+    elif "Friday" in dayhour:
+         today = "fri";
+         day1 = "sat";
+         day2 = "sun";
+         day3 = "mon";
+         day4 = "tue";
+    elif "Saturday" in dayhour:
+         today = "sat";
+         day1 = "sun";
+         day2 = "mon";
+         day3 = "tue";
+         day4 = "Wed";
+    else:
+         today = "sun";
+         day1 = "mon";
+         day2 = "tue";
+         day3 = "wed";
+         day4 = "thu";
+    weatherToday = weather['today']['weather_now'];
+    if "Snow" in weatherToday:
+        weatherImage = snow;
+    elif "thunderstorms" in weatherToday:
+        weatherImage = thunder_storms;
+    elif "cloudy" in weatherToday:
+        weatherImage = cloudy;
+    elif "rain" in weatherToday:
+        weatherImage = rain;
+    else:
+        weatherImage = sunny;
+        
+    
+<style>
+ .bmeContainer{
+     display: grid;
+     grid-template-columns: 100px 100px;
+     }
+ 
+ .bmeTemp {
+     font-size: 14px;
+     font-weight: bold;
+     width: 120px;
+     font-color:white;
+     background-color: #2E3959;
+     pointer-events:none;
+     margin-top: 10px;
+     margin-bottom: 10px;
+     }
+ .bmePres {
+     font-size: 14px;
+     font-weight: bold;
+     width: 100px;
+     font-color:white;
+     background-color: #2E3959;
+     pointer-events:none;
+     margin-top: 10px;
+     margin-bottom: 10px;
+     }
+ .bmeHum {
+     font-size: 14px;
+     font-weight: bold;
+     width: 100px;
+     font-color:white;
+     background-color: #2E3959;
+     pointer-events:none;
+     margin-top: 10px;
+     margin-bottom: 10px;
+     }
+ 
+ .bmeVal{
+      font-size: 15px;
+      text-align: center;
+      font-weight:bold;
+      border-color: #2E3959;
+      margin-top: 10px;
+      margin-bottom: 10px;
+     }
+  hr{
+      border-width: 1px;
+      border-color: black;
+      }
+  
+  <! --Weather Card template src: https://codepen.io/thomvallez/pen/NqyqWV --> 
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,300);
+html,
+body {
+    background-color: #F3F3F3;
+    font-family: 'Roboto', sans-serif;
+}
+
+.card {
+    
+    margin-top: 5%;
+    padding: 5px 30px;
+    width: 300px;
+    height: 470px;
+    border-radius: 3px;
+    background-color: #fff;
+    box-shadow: 1px 2px 10px rgba(0, 0, 0, .2);
+    -webkit-animation: open 2s cubic-bezier(.39, 0, .38, 1);
+}
+
+@-webkit-keyframes open {
+    from {
+        padding: 0 30px;
+        height: 0;
+    }
+    to {
+        height: 470px;
+    }
+}
+
+.h1Weather,
+.h2Weather,
+.h3Weather,
+.h4Weather {
+    position: relative;
+}
+
+.h1Weather {
+    float: right;
+    color: #666;
+    font-weight: 300;
+    font-size: 5.0em;
+    
+    -webkit-animation: up 2s cubic-bezier(.39, 0, .38, 1) .2s;
+}
+
+.h2Weather {
+    font-weight: 300;
+    font-size: 2.25em;
+    -webkit-animation: up 2s cubic-bezier(.39, 0, .38, 1);
+}
+
+.h3Weather {
+    float: left;
+    margin-right: 33px;
+    color: #777;
+    font-weight: 400;
+    font-size: 1em;
+    -webkit-animation: up 2s cubic-bezier(.39, 0, .38, 1) .1s;
+}
+
+span {
+    margin-left: 24px;
+    color: #999;
+    font-weight: 300;
+}
+
+span span {
+    margin-left: 0;
+}
+
+.dot {
+    font-size: .9em;
+}
+
+.sky {
+    position: relative;
+    margin-top: 15px;
+    width: 95px;
+    height: 100px;
+    border-radius: 50%;
+    left: 1px;
+    background-color: #03A9F4;
+    -webkit-animation: up 2s cubic-bezier(.39, 0, .38, 1) .2s;
+}
+
+.weatherImage{
+    position: relative;
+    top: 5px;
+    width: 80px;
+    height: 80px;
+    left: 1px;
+    border-radius: 50%;
+    -webkit-animation: up 2s cubic-bezier(.39, 0, .38, 1) .5s;
+    }
+
+.sun {
+    position: relative;
+    top: -3px;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background-color: #FFEB3B;
+    -webkit-animation: up 2s cubic-bezier(.39, 0, .38, 1) .5s;
+}
+
+.cloud {
+    position: absolute;
+    top: 60px;
+    left: 30px;
+    -webkit-animation: up 2s cubic-bezier(.39, 0, .38, 1) .7s;
+}
+
+.cloud:before,
+.cloud:after {
+    position: relative;
+    display: block;
+    content: "";
+}
+
+.cloud:before {
+    margin-left: -10px;
+    width: 51px;
+    height: 18px;
+    background: #fff;
+}
+
+.cloud:after {
+    position: absolute;
+    top: -10px;
+    left: -22px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 50px -6px 0 6px #fff, 25px -19px 0 10px #fff;
+    z-index: 10;
+}
+
+.tableWeather {
+    position: relative;
+    top: 10px;
+    width: 100%;
+    text-align: center;
+}
+
+.trW:nth-child(1) .tdW:nth-child(1),
+.trW:nth-child(1) .tdW:nth-child(2),
+.trW:nth-child(1) .tdW:nth-child(3),
+.trW:nth-child(1) .tdW:nth-child(4),
+.trW:nth-child(1) .tdW:nth-child(5) {
+    padding-bottom: 32px;
+    -webkit-animation: up 2s cubic-bezier(.39, 0, .38, 1) .7s;
+}
+
+.trW:nth-child(2) .tdW:nth-child(1),
+.trW:nth-child(2) .tdW:nth-child(2),
+.trW:nth-child(2) .tdW:nth-child(3),
+.trW:nth-child(2) .tdW:nth-child(4),
+.trW:nth-child(2) .tdW:nth-child(5) {
+    padding-bottom: 7px;
+    -webkit-animation: up 2s cubic-bezier(.39, 0, .38, 1) .9s;
+}
+
+.trW:nth-child(3) .tdW:nth-child(1),
+.trW:nth-child(3) .tdW:nth-child(2),
+.trW:nth-child(3) .tdW:nth-child(3),
+.trW:nth-child(3) .tdW:nth-child(4),
+.trW:nth-child(3) .tdW:nth-child(5) {
+    padding-bottom: 7px;
+    -webkit-animation: up 2s cubic-bezier(.39, 0, .38, 1) .9s;
+}
+
+.trW:nth-child(2),
+.trW:nth-child(3) {
+    font-size: .9em;
+}
+
+.trW:nth-child(3) {
+    color: #999;
+}
+
+@-webkit-keyframes up {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateY(15px);
+    }
+    50% {
+        opacity: 0;
+        -webkit-transform: translateY(15px);
+    }
+    99% {
+        -webkit-animation-play-state: paused;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+</style>
+
+<script>
+
+    // Initialize behaviors
+    jQuery(document).ready(function(){
+
+  
+
+        jQuery("button#docButton").click(function(){
+            window.open(baseUrl + "/static/docs/plugins/chirpDataDisplay-docs.html", "_blank"); //Edit: replace "proto-docs.html"
+        });
+
+    });
+</script>
+
+
+
+
+<div id="plugin">
+    <h1> Sensor Data Display</h1>
+    
+    <div class="title">Click help for more information about this page   <!--Edit: User page heading, Make relevant to your plugin-->
+    <button class="execute" id="docButton" type="button" >$_(u'Help')</button>
+    </div>
+    
+    <hr>
+    
+    <h2>Weekly Weather</h2>
+    
+     <div class="card">
+
+        <h2 class="h2Weather">${city + ',' + state}</h2>
+        <h3 class="h3Weather">$weather['today']['weather_now']<span>Wind $weather['today']['wind'] <span class="dot">•</span> Precip $weather['today']['precipitation']</span></h3>
+        <h3 class="h3Weather">Humidity $weather['today']['humidity'] </h3>
+        <h1 class="h1Weather">$weather['today']['temp_now']°</h1>
+        <div class="sky">
+            <img class="weatherImage" src=$weatherImage alt="weather_image">
+        </div>
+        <table class="tableWeather">
+            <tr class="trW">
+                <td class="tdW">$today.capitalize()</td>
+                <td class="tdW">$day1.capitalize()</td>
+                <td class="tdW">$day2.capitalize()</td>
+                <td class="tdW">$day3.capitalize()</td>
+                <td class="tdW">$day4.capitalize()</td>
+            </tr>
+            <tr class="trW">
+                <td class="tdW">$weather['future'][today]['max_temp']°</td>
+                <td class="tdW">$weather['future'][day1]['max_temp']°</td>
+                <td class="tdW">$weather['future'][day2]['max_temp']°</td>
+                <td class="tdW">$weather['future'][day3]['max_temp']°</td>
+                <td class="tdW">$weather['future'][day4]['max_temp']°</td>
+            </tr>
+            <tr class="trW">
+                <td class="tdW">$weather['future'][today]['min_temp']°</td>
+                <td class="tdW">$weather['future'][day1]['min_temp']°</td>
+                <td class="tdW">$weather['future'][day2]['min_temp']°</td>
+                <td class="tdW">$weather['future'][day3]['min_temp']°</td>
+                <td class="tdW">$weather['future'][day4]['min_temp']°</td>
+            </tr>
+        </table>
+    </div>
+    
+    <hr>
+    
+    <h2>BME Station Readings</h2>
+            
+            <div class="bmeContainer">
+            <button class="bmeTemp">Temperature: </button>
+                <div class="bmeVal">
+                 $bme[0]['temperature']F
+                </div>
+            <button class="bmePres">Pressure: </button>
+                <div class="bmeVal">
+                $bme[0]['pressure']hPa
+                </div>
+            <button class="bmeHum">Humidity: </button>
+                <div class="bmeVal">
+                 $bme[0]['humidity']%
+                </div>
+            </div>
+    
+    <hr>
+    
+    <h2>Soil Moisture per Zone Data</h2>
+    <p>
+    Select the zone to get the 25 most recent soil moisture readings
+    </p>
+    <div class='option' style="margin-left:5px; margin-top: 5px;"title='select zone'><span class="label">$_(u'List of Zones'):</span>
+        <select id="zoneList" style="width:75px;height:50px;" name="zoneList" onchange="update()">
+            <option value="zone_1">zone_1</option>
+            <option value="zone_2">zone_2</option>
+            <option value="zone_3" >zone_3</option>
+        </select>
+    </div>
+
+    
+    
+    
+    
+        <table id="chirpDataTable"class="table">
+            <thead>
+        <tr>
+            <th scope=u"col">
+             #
+            </th>
+            <th scope=u"col">
+              Time
+            </th>
+            <th scope=u"col">
+             Moisture
+            </th>
+            <th scope=u"col">
+             Temperature
+            </th>
+        </tr>
+            </thead>
+        <tbody id="tbody">
+          $for c in settings:
+            <tr class="$loop.parity">
+                <td>$loop.index</td>
+                <td>$c[u'time']</td>
+                <td>$c[u'moisture']</td>
+                <td>$c[u'temperature']</td>
+            </tr>
+        </tbody>
+        </table>
+    
+    
+    
+    
+<script>
+    function update(){
+        var zoneSelected = document.getElementById("zoneList").value;
+        jQuery.ajax(
+            {
+                url: '/updateTables',
+                type: "POST",
+                data: zoneSelected,
+                success: function(result){
+                    jQuery("#chirpDataTable").DataTable().destroy();
+                    jQuery("#chirpDataTable").empty();
+                    thHTML = '<thead><tr><th scope=u"col">#</th><th scope=u"col">Time</th><th scope=u"col">Moisture</th><th scope=u"col">Temperature</th></tr></thead>';
+                    jQuery("#chirpDataTable").append(thHTML);
+                    var data = JSON.parse(result);
+                    console.log(data)
+                    var i;
+                    jQuery("#chirpDataTable").append('<tbody id="tbody">');
+                    
+                    var trHTML;
+                    for(i = 0; i < data.length; i++){
+                        trHTML = '<tr>';
+                        
+                        trHTML += '<td>' + (i + 1) + '</td>' +
+                                  '<td>' + data[i].time + '</td>' +
+                                  '<td>' + data[i].moisture + '</td>' +
+                                  '<td>' + data[i].temperature + '</td>';
+                        trHTML += '</tr>';
+                        jQuery("#chirpDataTable").append(trHTML);
+                        }
+                    jQuery("#chirpDataTable").append('</tbody>');
+                    
+                     jQuery("#chirpDataTable").DataTable({
+                        bLengthChange: true,
+                        lengthMenu: [[5,10,-1],[5,10,"All"]],
+                        bFilter: true,
+                        bSort: true,
+                        bPaginate: true,
+                        columns: [{'data':'#'},
+                                  {'data': 'Time'},
+                                  {'data': 'Moisture'},
+                                  {'data': 'Temperature'}]
+                        });
+                    
+                    
+                    
+                    },
+                error: function(result){
+                     console.log("ERROR");
+                     console.log(result)
+                    }
+                
+            });
+        
+        }
+</script>
+ 
+
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery("#chirpDataTable").DataTable({
+            bLengthChange: true,
+            lengthMenu: [[5,10,-1],[5,10,"All"]],
+            bFilter: true,
+            bSort: true,
+            bPaginate: true,
+            columns: [{'data':'#'},
+                      {'data': 'Time'},
+                      {'data': 'Moisture'},
+                      {'data': 'Temperature'}]
+            });
+    } );
+</script>
+
+
+</div>
