@@ -3,12 +3,13 @@
 
 import web  # web.py framework
 import gv  # Get access to SIP's settings
+import datetime
 from urls import urls  # Get access to SIP's URLs
 from sip import template_render  #  Needed for working with web.py templates
 from webpages import ProtectedPage  # Needed for security
 import json  # for working with data file
 from influxdb import InfluxDBClient
-import json
+
 
 db_client = InfluxDBClient(host='localhost',port=8086)
 
@@ -54,8 +55,20 @@ class settings(ProtectedPage):
         for v in bme_vals:
             print("Time: %s, Temp: %i, Pressure: %i, Humidity: %i" % (v['time'],v['temperature'],v['pressure'],v['humidity']))
 
-        for p in points:
-            print("Time: %s,Moisture: %i, Temp: %i" % (p['time'],p['moisture'],p['temperature']))
+        #for p in points:
+            #print("Time: %s,Moisture: %i, Temp: %i" % (p['time'],p['moisture'],p['temperature']))
+            
+        #Seperate Time and Date
+        for i, p in enumerate(points):
+            print(p['time'])
+            print(str(p))
+            d = p['time'][0:10]
+            t = p['time'][11:19]
+            print(t)
+            print(d)
+            p['time'] = t
+            p['date'] = d
+            print(str(p))
         #settings = points;  # Default settings. can be list, dictionary, etc.
         settings = points
         bme = bme_vals
@@ -85,6 +98,21 @@ class updateTables():
         db_client.switch_database('sensor_data')
         results = db_client.query('Select * from ' + zoneSelected + ' ORDER BY time DESC limit 25')
         points = list(results.get_points())
+        
+        #Seperate Time and Date
+        for i, p in enumerate(points):
+            print(p['time'])
+            print(str(p))
+            d = p['time'][0:10]
+            t = p['time'][11:19]
+            print(t)
+            print(d)
+            p['time'] = t
+            p['date'] = d
+            print(str(p))
+            #time_stamp = datetime.datetime.strptime(t,"%H:%M:%S")
+            #print(time_stamp)
+            
         settings = points
         ret = json.dumps(settings)
         

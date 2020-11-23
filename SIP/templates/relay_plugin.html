@@ -1,4 +1,4 @@
-$def with(settings)
+$def with(settings, station_count)
 
 $var title: $_(u'SIP - Relay Plugin Settings')
 $var page: relay_plugin
@@ -42,61 +42,25 @@ $var page: relay_plugin
     <button class="execute" id="docButton" type="button" >$_(u'Help')</button>
     </div>
 
-    <p>$_(u'Select the amount of relays that will be used to control the spinkler valves.')</p>
     <form id="pluginForm" action="/relayupdate" method="get">
-	<div class='option' title='The amount of relays connected to the PI'><span class="label">$_(u'Relay count'):</span>
-	    <select id="relaycount" name="relaycount" onchange="editTable()">
-	    	<option value="1" ${"selected" if settings[u"relaycount"]==1 else ""}>1</option>
-	    	<option value="2" ${"selected" if settings[u"relaycount"]==2 else ""}>2</option>
-		<option value="3" ${"selected" if settings[u"relaycount"]==3 else ""}>3</option>
-		<option value="4" ${"selected" if settings[u"relaycount"]==4 else ""}>4</option>
-		<option value="5" ${"selected" if settings[u"relaycount"]==5 else ""}>5</option>
-		<option value="6" ${"selected" if settings[u"relaycount"]==6 else ""}>6</option>
-		<option value="7" ${"selected" if settings[u"relaycount"]==7 else ""}>7</option>
-		<option value="8" ${"selected" if settings[u"relaycount"]==8 else ""}>8</option>
-            </select>
-	</div>
 
         <table class="optionList">
             <thead>
 		<tr>
-                    <th class="stationNumber">$_(u'Relay')</th>
+                    <th class="stationNumber">$_(u'Station')</th>
                     <th class="stationNumber">$_(u'Pi GPIO Pin')</th>
 		</tr>
             </thead>
 	    <tbody id="tbody">
-                <tr>
-		    <td style='text-transform: none;'>$_(u'Relay 1'):</td>
-                    <td><input type="text" name="relay1" id="relay1" value="${settings['relay1'] if 'relay1' in settings else '' }" ${"" if 'relay1' in settings else "disabled"}></td>
-                </tr>
-		<tr>
-		    <td style='text-transform: none;'>$_(u'Relay 2'):</td>
-                    <td><input type="text" name="relay2" id="relay2" value="${settings['relay2'] if 'relay2' in settings else '' }" ${"" if 'relay2' in settings else "disabled"}></td>
-                </tr>
-		<tr>
-		    <td style='text-transform: none;'>$_(u'Relay 3'):</td>
-                    <td><input type="text" name="relay3" id="relay3" value="${settings['relay3'] if 'relay3' in settings else '' }" ${"" if 'relay3' in settings else "disabled"}></td>
-                </tr>
-		<tr>
-		    <td style='text-transform: none;'>$_(u'Relay 4'):</td>
-                    <td><input type="text" name="relay4" id="relay4" value="${settings['relay4'] if 'relay4' in settings else '' }" ${"" if 'relay4' in settings else "disabled"}></td>
-                </tr>
-		<tr>
-		    <td style='text-transform: none;'>$_(u'Relay 5'):</td>
-                    <td><input type="text" name="relay5" id="relay5" value="${settings['relay5'] if 'relay5' in settings else '' }" ${"" if 'relay5' in settings else "disabled"}></td>
-                </tr>
-		<tr>
-		    <td style='text-transform: none;'>$_(u'Relay 6'):</td>
-                    <td><input type="text" name="relay6" id="relay6" value="${settings['relay6'] if 'relay6' in settings else '' }" ${"" if 'relay6' in settings else "disabled"}></td>
-                </tr>
-		<tr>
-		    <td style='text-transform: none;'>$_(u'Relay 7'):</td>
-                    <td><input type="text" name="relay7" id="relay7" value="${settings['relay7'] if 'relay7' in settings else '' }" ${"" if 'relay7' in settings else "disabled"}></td>
-                </tr>
-		<tr>
-		    <td style='text-transform: none;'>$_(u'Relay 8'):</td>
-                    <td><input type="text" name="relay8" id="relay8" value="${settings['relay8'] if 'relay8' in settings else '' }" ${"" if 'relay8' in settings else "disabled"}></td>
-                </tr>
+		
+		$for s in range(8):
+            	    $ sid = s + 1;
+
+                    <tr>
+		    	<td style='text-transform: none;'>Station ${sid}:</td>
+                    	<td><input type="text" name="relay${sid}" id="relay${sid}" value="${settings['relay'+str(sid)] if (('relay'+str(sid)) in settings and station_count[s]) else '' }" ${"" if station_count[s] else "disabled"}></td>
+                    </tr>
+
 	    </tbody>
         </table>
 

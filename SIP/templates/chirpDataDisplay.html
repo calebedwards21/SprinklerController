@@ -330,7 +330,7 @@ span span {
   
 
         jQuery("button#docButton").click(function(){
-            window.open(baseUrl + "/static/docs/plugins/chirpDataDisplay-docs.html", "_blank"); //Edit: replace "proto-docs.html"
+            window.open(baseUrl + "/static/docs/plugins/chirpDataDisplay-docs.html", "_blank");
         });
 
     });
@@ -342,7 +342,7 @@ span span {
 <div id="plugin">
     <h1> Sensor Data Display</h1>
     
-    <div class="title">Click help for more information about this page   <!--Edit: User page heading, Make relevant to your plugin-->
+    <div class="title">Click help for more information about this page   
     <button class="execute" id="docButton" type="button" >$_(u'Help')</button>
     </div>
     
@@ -431,6 +431,9 @@ span span {
               Time
             </th>
             <th scope=u"col">
+              Date
+            </th>
+            <th scope=u"col">
              Moisture
             </th>
             <th scope=u"col">
@@ -443,6 +446,7 @@ span span {
             <tr class="$loop.parity">
                 <td>$loop.index</td>
                 <td>$c[u'time']</td>
+                <td>$c[u'date']</td>
                 <td>$c[u'moisture']</td>
                 <td>$c[u'temperature']</td>
             </tr>
@@ -463,7 +467,7 @@ span span {
                 success: function(result){
                     jQuery("#chirpDataTable").DataTable().destroy();
                     jQuery("#chirpDataTable").empty();
-                    thHTML = '<thead><tr><th scope=u"col">#</th><th scope=u"col">Time</th><th scope=u"col">Moisture</th><th scope=u"col">Temperature</th></tr></thead>';
+                    thHTML = '<thead><tr><th scope=u"col">#</th><th scope=u"col">Time</th><th scope=u"col">Date</th><th scope=u"col">Moisture</th><th scope=u"col">Temperature</th></tr></thead>';
                     jQuery("#chirpDataTable").append(thHTML);
                     var data = JSON.parse(result);
                     console.log(data)
@@ -476,6 +480,7 @@ span span {
                         
                         trHTML += '<td>' + (i + 1) + '</td>' +
                                   '<td>' + data[i].time + '</td>' +
+                                  '<td>' + data[i].date + '</td>' +
                                   '<td>' + data[i].moisture + '</td>' +
                                   '<td>' + data[i].temperature + '</td>';
                         trHTML += '</tr>';
@@ -491,6 +496,7 @@ span span {
                         bPaginate: true,
                         columns: [{'data':'#'},
                                   {'data': 'Time'},
+                                  {'data': 'Date'},
                                   {'data': 'Moisture'},
                                   {'data': 'Temperature'}]
                         });
@@ -520,6 +526,7 @@ span span {
             bPaginate: true,
             columns: [{'data':'#'},
                       {'data': 'Time'},
+                      {'data': 'Date'},
                       {'data': 'Moisture'},
                       {'data': 'Temperature'}]
             });
