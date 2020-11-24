@@ -267,11 +267,50 @@ class save_settings(ProtectedPage):
             json.dump(programs, f2,  indent=2)
         
         load_programs()
-        
         # Begin Timing_Loop
-        tl = Thread(target=timing_loop)
-        tl.daemon = True
-        tl.start()
+        #tl = Thread(target=timing_loop)
+        #tl.daemon = True
+        #tl.start()
+        
         
         raise web.seeother(u"/")  # Return user to home page.
+
+class ProgramDataLoop(Thread):
     
+    
+    def __init__(self):
+        Thread.__init__(self)
+        self.daemon = True
+        self.start()
+        self._sleep_time = 0
+        
+        
+    def update(self):
+        self._sleep_time = 0
+        
+    def _sleep(self,secs):
+        self._sleep_time = secs
+        while self._sleep_time > 0:
+            time.sleep(1)
+            self._sleep_time -= 1
+            
+    def run(self):
+        print('start of timing loop')
+        print(gv.now)
+        last_min = 0
+        while True:
+            if int(gv.now // 60) != last_min:
+                temp = int(gv.now // 60)
+                t = time.localtime()
+                time_stamp = time.strftime("%H:%M:%S",t)
+                print(temp)
+                print(time_stamp)
+                last_min = int(gv.now // 60)
+            self._sleep(60)
+        
+
+checker = ProgramDataLoop()
+    
+
+        
+        
