@@ -1,0 +1,111 @@
+$def with(settings, programs, station_count)
+
+$var title: $_(u'SIP - Controller Plugin')
+$var page: controller
+</style>
+<script>
+    // Initialize behaviors
+    jQuery(document).ready(function(){
+
+        jQuery("#cSubmit").click(function() {
+            jQuery("#pluginForm").submit();
+        });
+        jQuery("button#cCancel").click(function(){
+            window.location="/";
+        });
+
+        jQuery("button#docButton").click(function(){
+            window.open("static/docs/plugins/controller_docs.html", "_blank"); //Edit: replace "proto-docs.html"
+        });
+
+    });
+</script>
+
+<script>
+    function customEnable(x){
+	var rate_element = document.getElementById("hrate"+x);
+	var type = document.getElementById("htype"+x).value;
+
+	console.log(type);
+
+	if (type == 10){
+	    rate_element.disabled = false;
+	    console.log("enable");
+	} else {
+	    rate_element.disabled = true;
+	    console.log("diable");
+	}
+    }
+</script>
+
+<div id="plugin">
+    <div class="title">$_(u'Controller Plugin')
+    <button class="execute" id="docButton" type="button" >$_(u'Help')</button>
+    </div>
+
+    <form id="pluginForm" action="${'/contrlupdate'}" method="get">
+
+	<p>$_(u'Enable suggestion changes to current programs')</p>
+
+	<div class="item">
+	    <span class="label">Enable:</span>
+	    <input type="checkbox" name="enable" id="enable" ${" checked" if 'enable' in settings else ''}>
+	</div>
+
+	<div>
+	    <input type="radio" id="morning" name="watertime" value="morning" ${" checked" if settings[u"watertime"]=='morning' else ""}>
+	    <label for="morning">Morning</label><br>
+	    <input type="radio" id="night" name="watertime" value="night" ${" checked" if settings[u"watertime"]=='night' else ""}>
+	    <label for="night">Night</label><br>
+	</div>
+
+        <p>$_(u'Yard Information')</p>
+        <table class="optionList">
+
+            <thead>
+                <th class="stationNumber">$_(u'Station')</th>
+                <th class="stationNumber">$_(u'Area (ft2)')</th>
+		<th class="stationNumber">$_(u'Water Amount (in)')</th>
+		<th class="stationNumber">$_(u'Sprinkler Nozzle Type')</th>
+		<th class="stationNumber">$_(u'Nozzle Flow Rate (GPM)')</th>
+		<th class="stationNumber">$_(u'Number of Sprinkler Heads')</th>
+            </thead>
+
+	    $for s in range(8):
+            	$ sid = s + 1;
+
+            	<tr>
+                    <td style='text-transform: none;'>Station ${sid}:</td>
+                    <td><input type="text" name="area${sid}" value="${settings['area'+str(sid)] if ('area'+str(sid)) in settings else ''}" ${"" if station_count[s] else "disabled"}></td>
+            	    <td><input type="text" name="water${sid}" value="${settings['water'+str(sid)] if ('water'+str(sid)) in settings else ''}" ${"" if station_count[s] else "disabled"}></td>
+		    <td>
+		    	<select name="htype${sid}" id="htype${sid}" onchange=customEnable(${sid}) ${"" if station_count[s] else "disabled"}>
+			    <option value=1 ${"selected" if (u"htype"+str(sid) in settings and settings[u"htype"+str(sid)]=='1') else ""}>Rotary (3.11 GPM Nominal)</option>
+			    <option value=2 ${"selected" if (u"htype"+str(sid) in settings and settings[u"htype"+str(sid)]=='2') else ""}>Gear (3.3 GPM Nominal)</option>
+			    <option value=3 ${"selected" if (u"htype"+str(sid) in settings and settings[u"htype"+str(sid)]=='3') else ""}>Drip (0.015 GPM Nominal)</option>
+			    <option value=4 ${"selected" if (u"htype"+str(sid) in settings and settings[u"htype"+str(sid)]=='4') else ""}>Bubbler (0.25 GPM Nominal)</option>
+			    <option value=5 ${"selected" if (u"htype"+str(sid) in settings and settings[u"htype"+str(sid)]=='5') else ""}>Bubbler (0.5 GPM Nominal)</option>
+			    <option value=6 ${"selected" if (u"htype"+str(sid) in settings and settings[u"htype"+str(sid)]=='6') else ""}>Bubbler (1.0 GPM Nominal)</option>
+			    <option value=7 ${"selected" if (u"htype"+str(sid) in settings and settings[u"htype"+str(sid)]=='7') else ""}>Bubbler (2.0 GPM Nominal)</option>
+			    <option value=8 ${"selected" if (u"htype"+str(sid) in settings and settings[u"htype"+str(sid)]=='8') else ""}>Popup and Shrub Spray (0.2 GPM Nominal)</option>
+			    <option value=9 ${"selected" if (u"htype"+str(sid) in settings and settings[u"htype"+str(sid)]=='9') else ""}>Popup and Shrub Spray (0.5 GPM Nominal)</option>
+			    <option value=10 ${"selected" if (u"htype"+str(sid) in settings and settings[u"htype"+str(sid)]=='10') else ""}>Custom</option>
+		    	</select>
+		    </td>
+		    <td><input type="text" name="hrate${sid}" id="hrate${sid}" value="${settings['hrate'+str(sid)] if ('hrate'+str(sid)) in settings else ''}" ${"" if (station_count[s] and (u"htype"+str(sid) in settings and settings[u"htype"+str(sid)]=='10')) else "disabled"}></td>
+		    <td><input type="text" name="hnum${sid}" value="${settings['hnum'+str(sid)] if ('hnum'+str(sid)) in settings else ''}" ${"" if station_count[s] else "disabled"}></td>
+	 	</tr>	
+
+        </table>
+
+    </form>
+
+<div>
+    <p>${settings}</p>
+</div>
+
+<div class="controls">
+    <button id="cSubmit" class="submit"><b>$_(u'Submit')</b></button>
+    <button id="cCancel" class="cancel danger">$_(u'Cancel')</button>
+</div>
+</div>
