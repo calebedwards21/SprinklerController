@@ -277,14 +277,12 @@ class save_settings(ProtectedPage):
 
 class ProgramDataLoop(Thread):
     
-    
     def __init__(self):
         Thread.__init__(self)
         self.daemon = True
         self.start()
         self._sleep_time = 0
-        
-        
+         
     def update(self):
         self._sleep_time = 0
         
@@ -302,9 +300,11 @@ class ProgramDataLoop(Thread):
             if int(gv.now // 60) != last_min:
                 temp = int(gv.now // 60)
                 t = time.localtime()
+                en = settings['enabled']
                 time_stamp = time.strftime("%H:%M:%S",t)
                 print(temp)
                 print(time_stamp)
+                print(settings)
                 last_min = int(gv.now // 60)
             self._sleep(60)
         
