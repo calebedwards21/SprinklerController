@@ -96,7 +96,7 @@ class updateTables():
             
     
         db_client.switch_database('sensor_data')
-        results = db_client.query('Select * from ' + zoneSelected + ' ORDER BY time DESC limit 25')
+        results = db_client.query('Select * from ' + zoneSelected.decode("utf-8") + ' ORDER BY time DESC limit 25')
         points = list(results.get_points())
         
         #Seperate Time and Date
