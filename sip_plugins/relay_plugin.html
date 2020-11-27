@@ -1,0 +1,73 @@
+$def with(settings, station_count)
+
+$var title: $_(u'SIP - Relay Plugin Settings')
+$var page: relay_plugin
+<script>
+    // Initialize behaviors
+    jQuery(document).ready(function(){
+
+        jQuery("#cSubmit").click(function() {
+            jQuery("#pluginForm").submit();
+        });
+        jQuery("button#cCancel").click(function(){
+            window.location="/";
+        });
+
+        jQuery("button#docButton").click(function(){
+            window.open("static/docs/plugins/proto-docs.html", "_blank"); //Edit: replace "proto-docs.html"
+        });
+
+    });
+</script>
+
+<script>
+    function editTable(){
+	// Count of relays to use
+	var number = document.getElementById("relaycount").value;
+	// Go through all input fields and enable/disable based off of count
+	for (i=0; i<8; i++){
+	    // Grab input element i+1
+	    var input = document.getElementById("relay"+(i+1));
+	    if (i < number){
+		input.disabled = false;
+	    } else {
+		input.disabled = true;
+	    }
+	}
+    }
+</script>
+
+<div id="plugin">
+    <div class="title">$_(u'Relay Plugin Settings')
+    <button class="execute" id="docButton" type="button" >$_(u'Help')</button>
+    </div>
+
+    <form id="pluginForm" action="/relayupdate" method="get">
+
+        <table class="optionList">
+            <thead>
+		<tr>
+                    <th class="stationNumber">$_(u'Station')</th>
+                    <th class="stationNumber">$_(u'Pi GPIO Pin')</th>
+		</tr>
+            </thead>
+	    <tbody id="tbody">
+		
+		$for s in range(8):
+            	    $ sid = s + 1;
+
+                    <tr>
+		    	<td style='text-transform: none;'>Station ${sid}:</td>
+                    	<td><input type="text" name="relay${sid}" id="relay${sid}" value="${settings['relay'+str(sid)] if (('relay'+str(sid)) in settings and station_count[s]) else '' }" ${"" if station_count[s] else "disabled"}></td>
+                    </tr>
+
+	    </tbody>
+        </table>
+
+    </form>
+
+    <div class="controls" id="controls">
+        <button id="cSubmit" class="submit"><b>$_(u'Submit')</b></button>
+        <button id="cCancel" class="cancel danger">$_(u'Cancel')</button>
+    </div>
+</div>
