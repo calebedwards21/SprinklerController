@@ -1,0 +1,34 @@
+<html>
+ <body>
+ <div>	
+  <h1> Sprinkler Project Help Page</h1>
+  <hr>
+  <h2>Controller Page Info </h2>
+  <hr>
+  <h2>Relay Page Info</h2>
+  <hr>
+  <h2>Data Display Page Info</h2>
+   <p> 
+    All sensor readings utilize MQTT protocol for sending polled sensor data from ESP32's
+    (publisher) to our raspberry pi controller (subscriber) which are than stored using
+    InfluxDB (time-series data base).
+   </p>
+   <h3>Weekly Weather</h3>
+   We created a Weather Scraper script in Python to pull weather data from Google for the next five days (including today)
+   which is displayed on chirpDataDisplay page.
+   
+   *NOTE: You must have internet connection for scraping real time weather.
+   <h3>BME Station Readings</h3>
+    <p>
+    A BME 680 along with an ESP32 as a microcontroller is used for capturing barometric pressure,
+    temperature and humidity. We use pressure and humidity along with scraped weather to help us gauge
+    whether or not it is going to rain. See the following link for more information plus a tutorial for setting up
+    a bme680.
+    <a href="https://randomnerdtutorials.com/micropython-bme680-esp32-esp8266/">BME680 Library and Tutorial</a>
+    </p>
+   <h3>Soil Moisture per Zone</h3>
+    
+  <hr>
+ </div>
+ </body>
+</html>

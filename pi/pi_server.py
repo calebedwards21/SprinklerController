@@ -9,8 +9,8 @@ TOPICS = ['zone_1', 'zone_2', 'zone_3', 'weather_station']
 db_client = InfluxDBClient(host='localhost', port=8086)
 db_client.create_database('sensor_data')
 
-scraper = Scraper() #Weather Scraper
-scraper.create_scraper()
+#scraper = Scraper() #Weather Scraper
+#scraper.create_scraper()
 
 def write_hub(temp,pressure,humidity):
         """
@@ -60,9 +60,9 @@ def write_zone(zone, moisture, temp, light):
         print("End of writing zone")
 
         # Output scraped data to json files
-        if zone == "zone_2" or zone == "zone_1":
-            scraper.write_file()
-            print("wrote file")
+        #if zone == "zone_2" or zone == "zone_1":
+            #scraper.write_file()
+            #print("wrote file")
 
 
 def on_message(client, userdata, msg):

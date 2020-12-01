@@ -126,10 +126,9 @@ def programCalculation(settings):
     # Testing
     print(weather_station)
     print(settings)
-    print(len(programs))
-    print("Programs load:", programs)
+    #print("Programs load:", programs)
 
-    # Check if the automated program exists
+    # Check if the automated program exists & Delete them
     temp = []
     for program in programs:
         name = program.get('name')
@@ -137,95 +136,103 @@ def programCalculation(settings):
             temp.append(program)
     programs = temp
 
-    print("Programs remv:", programs)
-
-    # Calculate time change
-    custom_programs = []
-
-    # Load station count
-    station_count = [int(digit) for digit in bin(gv.sd['show'][0])[2:]]
-    station_count.reverse()
-
-    for n in range(len(station_count), 8):
-        station_count.append(0)
-
-    gpm = {
-        "1": 3.11,
-        "2": 3.3,
-        "3": 0.015,
-        "4": 0.25,
-        "5": 0.5,
-        "6": 1,
-        "7": 2,
-        "8": 0.2,
-        "9": 0.5,
-        "10": 0
-    }
-
-    for i in range(8):
-        if station_count[i]:
-            # Load zone data
-            # Moisture
-            # Watering Time
-            m = db_client.query('Select * from zone_' + str(i+1) + ' ORDER BY time DESC limit 1')
-            moisture = list(m.get_points())
-            print(moisture)
-
-            w_t = db_client.query('select * from zone_' + str(i+1) + '_water_duration ORDER BY time DESC limit 1')
-            water_time = list(w_t.get_points())
-            print(water_time)
-
-            if ("hrate"+str(i+1)) in settings:
-                gpm["10"] = float(settings["hrate"+str(i+1)])
-
-            precipitation_rate = 96.25 * gpm[settings["htype"+str(i+1)]] / float(settings["area"+str(i+1)])
-
-            print("Precipitation Rate "+str(i+1)+":", precipitation_rate)
-
-            time_minutes = round((float(settings["water"+str(i+1)]) / precipitation_rate) * 60)
-            time_sec = time_minutes * 60
-
-            print("Time Min"+str(i+1)+":", time_minutes)
-            print("Time Sec"+str(i+1)+":", time_sec)
-
-            station_mask = [1 << i]
-
-            start_min = 360
-            duration = [time_sec]
-            stop_min = start_min+time_minutes
-
-            zoneName = "zone_" + str(i+1)
-            # write time to DB
-            write_water_duration(zoneName, float(time_sec), float(time_minutes))
-
-            day_mask = 127
-
-            new_program = {
-                "cycle_min": 0,
-                "day_mask": day_mask,
-                "duration_sec": duration,
-                "enabled": 1,
-                "interval_base_day": 0,
-                "name": "seniorproject2020",
-                "start_min": start_min,
-                "station_mask": station_mask,
-                "stop_min": stop_min,
-                "type": "alldays"
-            }
-
-            custom_programs.append(new_program)
-
-    # Add the new programs
-    for prog in custom_programs:
-        programs.append(prog)
-    print(programs)
+    #print("Programs remv:", programs)
+    precip = 0
+    #Check Rain from Weather
+    if weather:
+        precip = int(weather['today']['precipitation'].strip('%'))
+        print(precip)
     
-    # Save changed SIP programs to file
-    with open(u"./data/programData.json", u"w") as f2:
-        json.dump(programs, f2,  indent=2)
+    #Dont schedule if rain chance is high
+    if precip < 40:
+        # Calculate time change
+        custom_programs = []
 
-    load_programs()
-    #END HERE
+        # Load station count
+        station_count = [int(digit) for digit in bin(gv.sd['show'][0])[2:]]
+        station_count.reverse()
+
+        for n in range(len(station_count), 8):
+            station_count.append(0)
+
+        gpm = {
+            "1": 3.11,
+            "2": 3.3,
+            "3": 0.015,
+            "4": 0.25,
+            "5": 0.5,
+            "6": 1,
+            "7": 2,
+            "8": 0.2,
+            "9": 0.5,
+            "10": 0
+        }
+
+        for i in range(8):
+            if station_count[i]:
+                # Load zone data
+                # Moisture
+                # Watering Time
+                m = db_client.query('Select * from zone_' + str(i+1) + ' ORDER BY time DESC limit 1')
+                moisture = list(m.get_points())
+                print(moisture)
+
+                w_t = db_client.query('select * from zone_' + str(i+1) + '_water_duration ORDER BY time DESC limit 1')
+                water_time = list(w_t.get_points())
+                print(water_time)
+
+                if ("hrate"+str(i+1)) in settings:
+                    gpm["10"] = float(settings["hrate"+str(i+1)])
+
+                precipitation_rate = 96.25 * gpm[settings["htype"+str(i+1)]] / float(settings["area"+str(i+1)])
+
+                print("Precipitation Rate "+str(i+1)+":", precipitation_rate)
+
+                time_minutes = round((float(settings["water"+str(i+1)]) / precipitation_rate) * 60)
+                time_sec = time_minutes * 60
+
+                print("Time Min"+str(i+1)+":", time_minutes)
+                print("Time Sec"+str(i+1)+":", time_sec)
+
+                station_mask = [1 << i]
+
+                start_min = 360
+                duration = [time_sec]
+                stop_min = start_min+time_minutes
+
+                zoneName = "zone_" + str(i+1)
+                # write time to DB
+                write_water_duration(zoneName, float(time_sec), float(time_minutes))
+
+                #UPdate to be 3 day runs Mon, Wed , Fri
+                day_mask = 127
+
+                new_program = {
+                    "cycle_min": 0,
+                    "day_mask": day_mask,
+                    "duration_sec": duration,
+                    "enabled": 1,
+                    "interval_base_day": 0,
+                    "name": "seniorproject2020",
+                    "start_min": start_min,
+                    "station_mask": station_mask,
+                    "stop_min": stop_min,
+                    "type": "alldays"
+                }
+
+                custom_programs.append(new_program)
+
+        # Add the new programs
+        for prog in custom_programs:
+            programs.append(prog)
+        print(programs)
+        
+        # Save changed SIP programs to file
+        with open(u"./data/programData.json", u"w") as f2:
+            json.dump(programs, f2,  indent=2)
+
+        load_programs()
+        #END HERE
 
 
 ################################################################################
@@ -250,6 +257,7 @@ class ProgramDataLoop(Thread):
             self._sleep_time -= 1
 
     def run(self):
+        time.sleep(4)
         global settings
         print('start of timing loop')
         print(gv.now)
@@ -264,7 +272,8 @@ class ProgramDataLoop(Thread):
                 print(time_stamp)
                 print(en)
                 print('Program Calculation')
-                programCalculation(settings)
+                if en == "on":
+                    programCalculation(settings)
                 last_min = int(gv.now // 60)
             self._sleep(60)
 
@@ -433,7 +442,32 @@ checker_pressure = PressureSender()
 # Program Data Helper functions:                                               #
 ################################################################################
 
-#
+class PressureThread(Thread):
+
+    def __init__(self):
+        Thread.__init__(self)
+        self.daemon = True
+        self.start()
+        self._sleep_time = 0
+
+    def update(self):
+        self._sleep_time = 0
+
+    def _sleep(self, secs):
+        self._sleep_time = secs
+        while self._sleep_time > 0:
+            time.sleep(1)
+            self._sleep_time -= 1
+
+    def run(self):
+        #Wait a few seconds, then grab the pressure
+        time.sleep(4)
+        press = get_now_measure()
+        press = get_volt(press)
+        press = get_psi(press)
+        print("Pressure PSI", press)
+        
+        
 
 ################################################################################
 # Flow Helper functions:                                                       #
@@ -659,7 +693,7 @@ def write_pressure_log(ad2):
 #load_settings()
 
 # Call the load programs helper method to load the programs into SIP.
-load_programs()
+#load_programs()
 
 ################################################################################
 # Blinker Functions:                                                           #
@@ -677,7 +711,7 @@ def station_measure_count(name, **kw):
 
         prev_state = curr_state.copy()
         curr_state = gv.output_srvals.copy()
-
+        i = 0
         for station in range(8):
             if curr_state[station] and not prev_state[station]:
                 print("FLOW Station", station+1, "Start")
@@ -687,15 +721,19 @@ def station_measure_count(name, **kw):
                 rate_cnt = 0
                 # Wait a few seconds, then grab the pressure
                 #time.sleep(4)
-                press = get_now_measure()
-                press = get_volt(press)
-                press = get_psi(press)
-                print("Pressure PSI", press)
+                #press = get_now_measure()
+                #press = get_volt(press)
+                #press = get_psi(press)
+                #print("Pressure PSI", press)
+                p = PressureThread()
 
             elif prev_state[station] and not curr_state[station]:
                 # Count the time difference
                 seconds = gv.now-old_time
                 print("FLOW Station", station+1, "End", seconds)
+                m = db_client.query('Select * from zone_' + str(i+1) + ' ORDER BY time DESC limit 1')
+                moisture = list(m.get_points())
+                print(moisture)
                 # Grab the flow rate count and caclulate measures
                 pulses = rate_cnt
                 pps = rate_cnt/seconds
@@ -704,12 +742,13 @@ def station_measure_count(name, **kw):
                 lpm = mlpm/1000
                 gpm = lpm*0.2641720524
                 print("GPM", gpm)
-
+            i = i + 1
 
 sprinkler_zone_change = signal(u"zone_change")
 sprinkler_zone_change.connect(station_measure_count)
 
 
+ 
 ################
 # Writing to DB#
 ################
