@@ -8,6 +8,7 @@ import json  # for working with data file
 import time
 import sys
 import traceback
+from math import floor
 
 import web  # web.py framework
 import gv  # Get access to SIP's settings
@@ -176,6 +177,8 @@ def programCalculation(settings):
                 m = db_client.query('Select * from zone_' + str(i+1) + ' ORDER BY time DESC limit 1')
                 moisture = list(m.get_points())
                 print(moisture)
+                
+                
 
                 w_t = db_client.query('select * from zone_' + str(i+1) + '_water_duration ORDER BY time DESC limit 1')
                 water_time = list(w_t.get_points())
@@ -188,15 +191,46 @@ def programCalculation(settings):
 
                 print("Precipitation Rate "+str(i+1)+":", precipitation_rate)
 
-                time_minutes = round((float(settings["water"+str(i+1)]) / precipitation_rate) * 60)
+                time_minutes = round(((float(settings["water"+str(i+1)]) / precipitation_rate) * 60)/3)
+                print('before moisture change', time_minutes)
+                
+                if moisture:
+                    curr_moisture = int(moisture[0]['moisture'])
+                    print(curr_moisture)
+                    #Check moisture Range = 400-450 NO CHANGE
+                    if 400 <= curr_moisture <= 450:
+                        time_minutes = time_minutes
+                    
+                    #Add Time
+                    elif curr_moisture < 400:
+                        added_time = floor((400 - curr_moisture) / 25) + 1
+                        print('added time', added_time)
+                        time_minutes = time_minutes + added_time
+                    
+                    #Reduce Time
+                    elif 450 < curr_moisture < 550:
+                        added_time = floor((curr_moisture - 450) / 25) + 1
+                        print('added time', added_time)
+                        time_minutes = time_minutes - added_time
+                    
+                    elif curr_moisture >= 550:
+                        time_minutes = 0
+                    
+                #Max increase time
+                if time_minutes > 60:
+                    time_minutes = 60
+                    
                 time_sec = time_minutes * 60
-
                 print("Time Min"+str(i+1)+":", time_minutes)
                 print("Time Sec"+str(i+1)+":", time_sec)
 
                 station_mask = [1 << i]
 
-                start_min = 360
+                if settings['watertime'] == 'morning':
+                    start_min = 360
+                else:
+                    start_min = 1200
+                
                 duration = [time_sec]
                 stop_min = start_min+time_minutes
 
@@ -205,7 +239,7 @@ def programCalculation(settings):
                 write_water_duration(zoneName, float(time_sec), float(time_minutes))
 
                 #UPdate to be 3 day runs Mon, Wed , Fri
-                day_mask = 127
+                day_mask = 21
 
                 new_program = {
                     "cycle_min": 0,
@@ -219,8 +253,9 @@ def programCalculation(settings):
                     "stop_min": stop_min,
                     "type": "alldays"
                 }
-
-                custom_programs.append(new_program)
+                
+                if time_sec > 0:
+                    custom_programs.append(new_program)
 
         # Add the new programs
         for prog in custom_programs:
@@ -465,6 +500,7 @@ class PressureThread(Thread):
         press = get_now_measure()
         press = get_volt(press)
         press = get_psi(press)
+        #Save pressure to Influxdb
         print("Pressure PSI", press)
         
         
@@ -711,7 +747,6 @@ def station_measure_count(name, **kw):
 
         prev_state = curr_state.copy()
         curr_state = gv.output_srvals.copy()
-        i = 0
         for station in range(8):
             if curr_state[station] and not prev_state[station]:
                 print("FLOW Station", station+1, "Start")
@@ -726,14 +761,12 @@ def station_measure_count(name, **kw):
                 #press = get_psi(press)
                 #print("Pressure PSI", press)
                 p = PressureThread()
+                
 
             elif prev_state[station] and not curr_state[station]:
                 # Count the time difference
                 seconds = gv.now-old_time
                 print("FLOW Station", station+1, "End", seconds)
-                m = db_client.query('Select * from zone_' + str(i+1) + ' ORDER BY time DESC limit 1')
-                moisture = list(m.get_points())
-                print(moisture)
                 # Grab the flow rate count and caclulate measures
                 pulses = rate_cnt
                 pps = rate_cnt/seconds
@@ -741,8 +774,8 @@ def station_measure_count(name, **kw):
                 mlpm = mlps*60
                 lpm = mlpm/1000
                 gpm = lpm*0.2641720524
+                #Save pulses and gpm
                 print("GPM", gpm)
-            i = i + 1
 
 sprinkler_zone_change = signal(u"zone_change")
 sprinkler_zone_change.connect(station_measure_count)
