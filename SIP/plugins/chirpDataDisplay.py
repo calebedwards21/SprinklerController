@@ -45,7 +45,7 @@ class settings(ProtectedPage):
             print(qdict[key])
         
         db_client.switch_database('sensor_data')
-        results = db_client.query('Select * from zone_1 ORDER BY time DESC limit 25')
+        results = db_client.query('Select * from zone_1 ORDER BY time DESC limit 100')
         #print(results.raw)
         points = list(results.get_points())
         i=0
