@@ -42,7 +42,7 @@ class ML_Sprinkler:
         plt.show()
 
 
-    def test_model():
+    def test_model(self):
         """
         Tests the model with training and testing data
         """
@@ -56,7 +56,7 @@ class ML_Sprinkler:
         plt.show()
 
 
-    def accuracy():
+    def accuracy(self):
         """
         Returns the accuracy of the model
         """
