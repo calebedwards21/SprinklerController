@@ -88,6 +88,12 @@ This is the protocol used for wireless connection. This uses the Wifi for publis
 - SDA - IO21 / IO4 - Or any IO Pin
 - SCL - IO22 / IO5 - Or any IO Pin
 
+## BME680
+- VCC - 5/3.3v
+- GND - GND
+- SDA - GPIO 21
+- SCL- GPIO 22
+
 ## I2C Micropython ESP32
 
 The hardware version of I2C has to be used with Micropython. The software side doesn't work.
