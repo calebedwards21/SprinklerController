@@ -87,6 +87,7 @@ This is the protocol used for wireless connection. This uses the Wifi for publis
 - GND - GND
 - SDA - IO21 / IO4 - Or any IO Pin
 - SCL - IO22 / IO5 - Or any IO Pin
+- Library: https://github.com/scopelemanuele/pyChirpLib
 
 ## BME680
 - VCC - 5/3.3v
