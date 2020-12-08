@@ -93,6 +93,7 @@ This is the protocol used for wireless connection. This uses the Wifi for publis
 - GND - GND
 - SDA - GPIO 21
 - SCL- GPIO 22
+- Library: https://randomnerdtutorials.com/micropython-bme680-esp32-esp8266/
 
 ## I2C Micropython ESP32
 
