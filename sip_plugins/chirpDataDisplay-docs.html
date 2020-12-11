@@ -2,11 +2,29 @@
  <body>
  <div>	
   <h1> Sprinkler Project Help Page</h1>
+   <p>
+		Watering a lawn is a common activity for almost every house owner. Deciding how long and at what time someone should water their lawn can vary depending on where a lawn 
+		is located and what kind of weather is in that location. Project TURF is intended to solve the problem of time andlength for watering a lawn through automated systems. 
+		By using sensor arrays and a remotely accessible sprinkler controller Project TURF will automatically suggest when and for how long a lawn should be watered. 
+		A user will have full control via an online user-interface for creating a custom schedule or keeping the schedule that was built for them. This report outlines the design and 
+		implementation of a Smart Sprinkler system with real-time feedback.
+   </p>
   <hr>
   <h2>Controller Page Info </h2>
+  The  controller  plugin  is  where  all of  the  times  and  adjustments  for  sprinkler  programs  are calculated. 
+  The controller page requires the user to input data for each zone to create a baseline time. The data required to calculate a baseline per zone is area (ft2), 
+  inches per week of water, the sprinkler head type with corresponding gallons perminute (GPM), and the number of sprinkler heads as seen inFig.  13.  
+  Each  day  the  plugin  calculates  a  precipitation  rate(PR)  for  every  zone  which  can  then  be  used  to  calculate  a base time.
+  
+  In  Utah  you  can  obtain  the  amount  of  water  per  week you  should  give  a  lawn  by  going  to  the  Division  of  WaterResources  website: https://conservewater.utah.gov/guide.html
   <hr>
   <h2>Relay Page Info</h2>
+  The  relay  plugin  enables  the  SIP  to control  the  sprinkler  valves  within  the  TURF  system.  
+  By using the same blinker signal that the controller plugin uses,the relay plugin enables and disables separate signals to the relay  board  using  the  Raspberry  Pi’s  GPIO  pins.  
+  The  pins may be set by the user, but we recommend leaving them set at the default values due to the Pi’s launch behavior. Not  using  the  default  values  may  result  in  
+  multiple  relays turning on due to the default behavior of the Raspbian OS.
   <hr>
+  
   <h2>Data Display Page Info</h2>
    <p> 
     All sensor readings utilize MQTT protocol for sending polled sensor data from ESP32's
@@ -27,7 +45,15 @@
     <a href="https://randomnerdtutorials.com/micropython-bme680-esp32-esp8266/">BME680 Library and Tutorial</a>
     </p>
    <h3>Soil Moisture per Zone</h3>
-    
+    We used a water-proofed capacitive 3-in-1 I2C sensor capable of measuring temperature, light, and moisture. 
+	One thing to note is that for the waterproofed version, the light sensor is covered by an adhesive-lined heat shrink and doesn't produce usable data. 
+	One moisture sensor will represent an individual zone. Both moisture and temperature data will be sent to the system's Raspberry Pi controller via MQTT protocol. 
+	
+	We placed a waterproofed I2C soil moisture sensor outside for approximately a month while performing tests such as 
+	not watering for 3-4 days and digging up the dirt to see how dry/moist it was. Based on our tests and gathering of data we determined--using online resources--our ideal moisture range to be 400-450, where 
+	a value of 300 is extremely dry and 400-450 is wet/damp, with the maximum being 800. Based on this moisture reading our controller will either add/reduce watering time or remove zones from running.
+	
+	The table found on the data display page was built using a POST method that will grab 5000 of the most recent moisture readings from InfluxDB based on the selected zone. 
   <hr>
  </div>
  </body>
